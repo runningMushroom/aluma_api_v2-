@@ -3,8 +3,7 @@ using StringHasher;
 using TokenProvider;
 using alumaApi.Interfaces;
 using BulkSms;
-
-using alumaApi.Interfaces;
+using JwtAuthentication;
 
 namespace alumaApi.RepoWrapper
 {
@@ -16,6 +15,7 @@ namespace alumaApi.RepoWrapper
         // from other sources
         IBulkSmsRepo BulkSms { get; }
 
+        IJwtRepo Jwt { get; }
         IStringHasher StrHasher { get; }
         IMailSender SendMail { get; }
         ITokenProvider TokenProvider { get; }

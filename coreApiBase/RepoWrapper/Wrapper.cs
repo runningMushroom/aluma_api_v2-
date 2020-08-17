@@ -6,7 +6,7 @@ using alumaApi.Interfaces;
 using alumaApi.Repositories;
 using BulkSms;
 
-using alumaApi.Interfaces;
+using JwtAuthentication;
 
 namespace alumaApi.RepoWrapper
 {
@@ -16,6 +16,7 @@ namespace alumaApi.RepoWrapper
         private IOtpRepo _otp;
         private IUserRepo _user;
         private IBulkSmsRepo _bulkSMs;
+        private IJwtRepo _jwt;
         private IStringHasher _hasher;
         private IMailSender _mailSender;
         private ITokenProvider _tokenProvider;
@@ -39,6 +40,11 @@ namespace alumaApi.RepoWrapper
         public IBulkSmsRepo BulkSms
         {
             get { return _bulkSMs == null ? new BulkSmsRepo() : _bulkSMs; }
+        }
+
+        public IJwtRepo Jwt
+        {
+            get { return _jwt == null ? new JwtRepo() : _jwt; }
         }
 
         public IStringHasher StrHasher
