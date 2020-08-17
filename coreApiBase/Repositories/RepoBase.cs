@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using alumaApi.Data;
@@ -29,14 +28,11 @@ namespace alumaApi.Repositories
 
         public void Create(T entity)
         {
-            entity.GetType().GetProperty("Created").SetValue(entity, DateTime.Now);
-            entity.GetType().GetProperty("Modified").SetValue(entity, DateTime.Now);
             this.DatabaseContext.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
-            entity.GetType().GetProperty("Modified").SetValue(entity, DateTime.Now);
             this.DatabaseContext.Set<T>().Update(entity);
         }
 

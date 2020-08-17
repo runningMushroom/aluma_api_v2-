@@ -2,6 +2,7 @@
 using StringHasher;
 using TokenProvider;
 using alumaApi.Interfaces;
+using BulkSms;
 
 namespace alumaApi.RepoWrapper
 {
@@ -11,8 +12,9 @@ namespace alumaApi.RepoWrapper
         IUserRepo User { get; }
 
         // from other sources
-        IStringHasher StrHasher { get; }
+        IBulkSmsRepo BulkSms { get; }
 
+        IStringHasher StrHasher { get; }
         IMailSender SendMail { get; }
         ITokenProvider TokenProvider { get; }
 

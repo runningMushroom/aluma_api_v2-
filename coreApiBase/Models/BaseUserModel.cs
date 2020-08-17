@@ -28,13 +28,10 @@ namespace alumaApi.Models
         [Required]
         public RoleEnum Role { get; set; }
 
-        public bool EmailVerified { get; set; }
-
         public bool MobileVerified { get; set; }
 
         public BaseUserModel()
         {
-            EmailVerified = false;
             MobileVerified = false;
         }
     }

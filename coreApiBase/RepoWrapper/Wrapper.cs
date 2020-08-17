@@ -4,6 +4,7 @@ using TokenProvider;
 using alumaApi.Data;
 using alumaApi.Interfaces;
 using alumaApi.Repositories;
+using BulkSms;
 
 namespace alumaApi.RepoWrapper
 {
@@ -11,6 +12,7 @@ namespace alumaApi.RepoWrapper
     {
         private DefaultDbContext _dbContext;
         private IUserRepo _user;
+        private IBulkSmsRepo _bulkSMs;
         private IStringHasher _hasher;
         private IMailSender _mailSender;
         private ITokenProvider _tokenProvider;
@@ -23,6 +25,12 @@ namespace alumaApi.RepoWrapper
         public IUserRepo User
         {
             get { return _user == null ? new UserRepo(_dbContext) : _user; }
+        }
+
+        // non db
+        public IBulkSmsRepo BulkSms
+        {
+            get { return _bulkSMs == null ? new BulkSmsRepo() : _bulkSMs; }
         }
 
         public IStringHasher StrHasher
