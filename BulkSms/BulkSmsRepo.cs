@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.IO;
 using System.Linq;
@@ -35,36 +36,23 @@ namespace BulkSms
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public async Task SendOTPAsync(string mobile, string otp)
+        public bool SendOtop(string mobile, string message)
         {
             // get last 9 digits from the string: mystring.Substring(mystring.Length - 4);
             var mobileNo = mobile.Substring(mobile.Length - 9);
 
-            // create http client
-            HttpClient client = new HttpClient();
+            var client = new RestClient($"{_settings.BaseUrl}messages");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            //request.AddHeader("Authorization", $"Basic ${_settings.ApiToken}");
+            // TODO: fix this to use the api code from the appsettings file
+            request.AddHeader("Authorization", "Basic OUIyRDQ2RjlFMEZENEQ0OUE4MEU2ODM4NTA2NkU0QjItMDEtNzpQbXlxdHlXSW5MZXlRUDBiUkJoeW9IZklDTzhObg==");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("application/json", "{\r\n    \"to\": \"+27" + mobileNo + "\",\r\n \"body\": \"" + message + "\"\r\n}", ParameterType.RequestBody);
+            //request.AddParameter("application/json", "{\r\n    \"to\": \"+27812584450\",\r\n    \"body\": \"an all new hell...\"\r\n}", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
 
-            client.BaseAddress = new Uri(_settings.BaseUrl);
-
-            client.DefaultRequestHeaders
-              .Accept
-              .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _settings.ApiToken);
-
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "messages");
-
-            request.Content = new StringContent(
-                JsonConvert.SerializeObject(new
-                {
-                    mobile = mobileNo,
-                    message = otp,
-                    userSuppliedId = "Aluma"
-                }), Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
-                throw new Exception();
+            return response.IsSuccessful ? true : false;
         }
     }
 }

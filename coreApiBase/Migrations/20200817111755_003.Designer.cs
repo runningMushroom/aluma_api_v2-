@@ -3,41 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200817111755_003")]
+    partial class _003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("alumaApi.Models.OtpModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ClientEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Otp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OtpType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Otp");
-                });
 
             modelBuilder.Entity("alumaApi.Models.UserModel", b =>
                 {

@@ -4,11 +4,13 @@ using TokenProvider;
 using alumaApi.Interfaces;
 using BulkSms;
 
+using alumaApi.Interfaces;
+
 namespace alumaApi.RepoWrapper
 {
     public interface IWrapper
     {
-        // from entities
+        IOtpRepo Otp { get; }
         IUserRepo User { get; }
 
         // from other sources

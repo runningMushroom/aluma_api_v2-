@@ -6,11 +6,14 @@ using alumaApi.Interfaces;
 using alumaApi.Repositories;
 using BulkSms;
 
+using alumaApi.Interfaces;
+
 namespace alumaApi.RepoWrapper
 {
     public class Wrapper : IWrapper
     {
         private DefaultDbContext _dbContext;
+        private IOtpRepo _otp;
         private IUserRepo _user;
         private IBulkSmsRepo _bulkSMs;
         private IStringHasher _hasher;
@@ -20,6 +23,11 @@ namespace alumaApi.RepoWrapper
         public Wrapper(DefaultDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public IOtpRepo Otp
+        {
+            get { return _otp == null ? new OtpRepo(_dbContext) : _otp; }
         }
 
         public IUserRepo User
