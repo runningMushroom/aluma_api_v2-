@@ -1,7 +1,7 @@
-﻿using vueBuilderApi.RepoWrapper;
+﻿using alumaApi.RepoWrapper;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace vueBuilderApi.Extensions
+namespace alumaApi.Extensions
 {
     public static class RepoWrapperExtension
     {

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using alumaApi.Static;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vueBuilderApi.Models
+namespace alumaApi.Models
 {
     public class BaseUserModel : BaseModel
     {
@@ -16,17 +17,16 @@ namespace vueBuilderApi.Models
         [Required, StringLength(13), MinLength(8)]
         public string IdNumber { get; set; }
 
-        [Required, StringLength(60), MinLength(10), DataType(DataType.EmailAddress)]
+        [Required, StringLength(60), MinLength(6), DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required, StringLength(11), MinLength(11)]
         public string MobileNumber { get; set; }
 
         [Required]
         public string Password { get; set; }
 
         [Required]
-        public string Role { get; set; }
+        public RoleEnum Role { get; set; }
 
         public bool EmailVerified { get; set; }
 

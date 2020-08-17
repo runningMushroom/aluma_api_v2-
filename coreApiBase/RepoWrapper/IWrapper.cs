@@ -1,9 +1,9 @@
 ﻿using MailSender;
 using StringHasher;
 using TokenProvider;
-using vueBuilderApi.Interfaces;
+using alumaApi.Interfaces;
 
-namespace vueBuilderApi.RepoWrapper
+namespace alumaApi.RepoWrapper
 {
     public interface IWrapper
     {

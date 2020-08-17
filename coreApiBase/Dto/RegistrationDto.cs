@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace vueBuilderApi.Dto
+namespace alumaApi.Dto
 {
     public class RegistrationDto
     {

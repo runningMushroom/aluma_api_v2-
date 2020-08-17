@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using vueBuilderApi.Dto;
-using vueBuilderApi.RepoWrapper;
-using vueBuilderApi.Static;
+using alumaApi.Dto;
+using alumaApi.RepoWrapper;
+using alumaApi.Static;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using vueBuilderApi.Models;
+using alumaApi.Models;
 
-namespace vueBuilderApi.Controllers
+namespace alumaApi.Controllers
 {
     [ApiController, Route("api/v1/user"), Authorize]
     public class UserController : Controller
@@ -31,7 +31,7 @@ namespace vueBuilderApi.Controllers
         }
 
         [HttpPost("create"), AllowAnonymous]
-        public IActionResult CreateUser([FromBody]RegistrationDto newUser)
+        public IActionResult CreateUser([FromBody] RegistrationDto newUser)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace vueBuilderApi.Controllers
                 var user = _mapper.Map<UserModel>(newUser);
 
                 // set user role to user
-                user.Role = Role.User;
+                user.Role = RoleEnum.Client;
 
                 // save to database
                 _wrapper.User.Create(user);
@@ -56,7 +56,7 @@ namespace vueBuilderApi.Controllers
                         IdNumber = user.IdNumber,
                         Mobile = user.MobileNumber,
                         Password = string.Empty,
-                        Role = user.Role,
+                        Role = user.Role.ToString(),
                         SystemId = user.Id.ToString(),
                         TokenType = "Email Verification"
                     }, 48);

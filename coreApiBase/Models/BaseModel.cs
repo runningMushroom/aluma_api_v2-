@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace vueBuilderApi.Models
+namespace alumaApi.Models
 {
     // all other models must inherit from this model
     public class BaseModel

@@ -1,11 +1,11 @@
 ﻿using MailSender;
 using StringHasher;
 using TokenProvider;
-using vueBuilderApi.Data;
-using vueBuilderApi.Interfaces;
-using vueBuilderApi.Repositories;
+using alumaApi.Data;
+using alumaApi.Interfaces;
+using alumaApi.Repositories;
 
-namespace vueBuilderApi.RepoWrapper
+namespace alumaApi.RepoWrapper
 {
     public class Wrapper : IWrapper
     {

@@ -1,6 +1,6 @@
-﻿using vueBuilderApi.Models;
+﻿using alumaApi.Models;
 
-namespace vueBuilderApi.Interfaces
+namespace alumaApi.Interfaces
 {
     public interface IUserRepo : IRepoBase<UserModel>
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace vueBuilderApi.Interfaces
+namespace alumaApi.Interfaces
 {
     public interface IRepoBase<T>
     {

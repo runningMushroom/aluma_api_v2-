@@ -1,4 +1,4 @@
-﻿namespace vueBuilderApi.Dto
+﻿namespace alumaApi.Dto
 {
     public class ConnectionStringsDto
     {

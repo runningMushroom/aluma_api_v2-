@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using vueBuilderApi.Models;
+using alumaApi.Models;
 
-namespace vueBuilderApi.Data
+namespace alumaApi.Data
 {
     public class DefaultDbContext : DbContext
     {
@@ -15,6 +15,5 @@ namespace vueBuilderApi.Data
         }
 
         public DbSet<UserModel> Users { get; set; }
-        public DbSet<SystemUserModel> SystemUsers { get; set; }
     }
 }

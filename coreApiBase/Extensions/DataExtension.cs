@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using vueBuilderApi.Data;
-using vueBuilderApi.Dto;
+using alumaApi.Data;
+using alumaApi.Dto;
 
-namespace vueBuilderApi.Extensions
+namespace alumaApi.Extensions
 {
     public static class DataExtension
     {

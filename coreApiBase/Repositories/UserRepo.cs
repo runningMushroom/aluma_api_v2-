@@ -1,8 +1,8 @@
-﻿using vueBuilderApi.Data;
-using vueBuilderApi.Interfaces;
-using vueBuilderApi.Models;
+﻿using alumaApi.Data;
+using alumaApi.Interfaces;
+using alumaApi.Models;
 
-namespace vueBuilderApi.Repositories
+namespace alumaApi.Repositories
 {
     public class UserRepo : RepoBase<UserModel>, IUserRepo
     {

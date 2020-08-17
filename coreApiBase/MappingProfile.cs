@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Entities.Dto;
-using vueBuilderApi.Dto;
-using vueBuilderApi.Models;
+using alumaApi.Dto;
+using alumaApi.Models;
 
-namespace vueBuilderApi
+namespace alumaApi
 {
     public class MappingProfile : Profile
     {

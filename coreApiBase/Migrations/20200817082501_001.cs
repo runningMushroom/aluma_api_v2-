@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace vueBuilderApi.Migrations
+namespace alumaApi.Migrations
 {
     public partial class _001 : Migration
     {

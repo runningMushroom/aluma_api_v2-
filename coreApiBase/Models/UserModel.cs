@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace vueBuilderApi.Models
+namespace alumaApi.Models
 {
     [Table("users")]
     public class UserModel : BaseUserModel

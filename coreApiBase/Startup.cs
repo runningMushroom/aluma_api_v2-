@@ -1,5 +1,5 @@
 using AutoMapper;
-using vueBuilderApi.Extensions;
+using alumaApi.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace vueBuilderApi
+namespace alumaApi
 {
     public class Startup
     {

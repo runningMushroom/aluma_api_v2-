@@ -1,8 +1,8 @@
-﻿using vueBuilderApi.Dto;
+﻿using alumaApi.Dto;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
-namespace vueBuilderApi.Extensions
+namespace alumaApi.Extensions
 {
     public static class SystemSettingsExtension
     {

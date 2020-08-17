@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace vueBuilderApi.Extensions
+namespace alumaApi.Extensions
 {
     public static class CorsExtension
     {

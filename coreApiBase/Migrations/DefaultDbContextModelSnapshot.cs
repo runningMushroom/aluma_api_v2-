@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using vueBuilderApi.Data;
+using alumaApi.Data;
 
-namespace vueBuilderApi.Migrations
+namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
     partial class DefaultDbContextModelSnapshot : ModelSnapshot
@@ -19,7 +19,7 @@ namespace vueBuilderApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("vueBuilderApi.Models.SystemUserModel", b =>
+            modelBuilder.Entity("alumaApi.Models.UserModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,9 +52,7 @@ namespace vueBuilderApi.Migrations
                         .HasMaxLength(60);
 
                     b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(11)")
-                        .HasMaxLength(11);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("MobileVerified")
                         .HasColumnType("bit");
@@ -66,65 +64,8 @@ namespace vueBuilderApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("system_users");
-                });
-
-            modelBuilder.Entity("vueBuilderApi.Models.UserModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(60)")
-                        .HasMaxLength(60);
-
-                    b.Property<bool>("EmailVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(60)")
-                        .HasMaxLength(60);
-
-                    b.Property<string>("IdNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(13)")
-                        .HasMaxLength(13);
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(60)")
-                        .HasMaxLength(60);
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(11)")
-                        .HasMaxLength(11);
-
-                    b.Property<bool>("MobileVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -135,7 +76,8 @@ namespace vueBuilderApi.Migrations
                         .IsUnique();
 
                     b.HasIndex("MobileNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[MobileNumber] IS NOT NULL");
 
                     b.ToTable("users");
                 });

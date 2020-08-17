@@ -3,9 +3,9 @@ using Hangfire.Dashboard;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
-using vueBuilderApi.Dto;
+using alumaApi.Dto;
 
-namespace vueBuilderApi.Extensions
+namespace alumaApi.Extensions
 {
     public static class HangFireExtension
     {

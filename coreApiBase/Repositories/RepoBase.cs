@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using vueBuilderApi.Data;
-using vueBuilderApi.Interfaces;
+using alumaApi.Data;
+using alumaApi.Interfaces;
 
-namespace vueBuilderApi.Repositories
+namespace alumaApi.Repositories
 {
     public class RepoBase<T> : IRepoBase<T> where T : class
     {
