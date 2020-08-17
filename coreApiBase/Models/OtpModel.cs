@@ -9,6 +9,7 @@ namespace alumaApi.Models
     public class OtpModel
     {
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string ClientEmail { get; set; }
         public OtpTypesEnum OtpType { get; set; }
         public string Otp { get; set; }

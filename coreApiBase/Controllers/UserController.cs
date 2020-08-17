@@ -15,6 +15,7 @@ using Entities.Dto;
 using alumaApi.Models;
 
 using alumaApi.Enum;
+using System.Linq;
 
 namespace alumaApi.Controllers
 {
@@ -55,7 +56,8 @@ namespace alumaApi.Controllers
                 {
                     ClientEmail = user.Email,
                     Otp = otp,
-                    OtpType = OtpTypesEnum.Registration
+                    OtpType = OtpTypesEnum.Registration,
+                    UserId = user.Id
                 });
 
                 // send otp
@@ -68,6 +70,44 @@ namespace alumaApi.Controllers
                 _repo.Save();
 
                 return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("verify/account/{email}/{otp}"), AllowAnonymous]
+        public IActionResult VerifyAccount(string email, string otp)
+        {
+            try
+            {
+                // get otp object where emails match
+                var otpObjList = _repo.Otp.FindByCondition(c => c.ClientEmail == email);
+
+                if (!otpObjList.Any())
+                    return StatusCode(404, "OTP Object not found");
+
+                var otpObj = otpObjList.First();
+
+                // check that the otp is valid
+                if (otpObj.Otp != otp)
+                    return StatusCode(403, "OTP Invalid");
+
+                // get the corrosponding user
+                var user = _repo.User.FindByCondition(c => c.Id == otpObj.UserId).First();
+                user.MobileVerified = true;
+
+                // update user
+                _repo.User.Update(user);
+
+                // remove the otp object
+                _repo.Otp.Delete(otpObj);
+
+                // save changes
+                _repo.Save();
+
+                return Ok();
             }
             catch (Exception e)
             {
