@@ -40,6 +40,10 @@ namespace alumaApi.Controllers
         {
             try
             {
+                // check that there are no users with this email or id number
+                if (_repo.User.FindByCondition(c => c.Email == dto.Email || c.IdNumber == dto.IdNumber).Any())
+                    return StatusCode(403, "Duplicate Client");
+
                 // map dto to user obj
                 var user = _mapper.Map<UserModel>(dto);
                 user.Role = RoleEnum.Client;
