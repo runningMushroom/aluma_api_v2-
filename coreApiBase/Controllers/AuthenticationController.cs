@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using alumaApi.Dto;
 using alumaApi.RepoWrapper;
 using AutoMapper;
-using Entities.Dto;
 using Microsoft.AspNetCore.Mvc;
 
-namespace vueBuilderApi.Controllers
+namespace alumaApi.Controllers
 {
     [ApiController, Route("api/v1/authenticate")]
     public class AuthenticationController : ControllerBase
@@ -34,7 +34,7 @@ namespace vueBuilderApi.Controllers
                 if (!_repo.StrHasher.ValidateHash(user.Password, password))
                     return StatusCode(401, "Credentials Invalid");
 
-                var userDto = _mapper.Map<UserDto>(user);
+                var userDto = _mapper.Map<UserModelDto>(user);
 
                 // generate jwt token
                 userDto.Token = _repo.Jwt.CreateJwtToken(user.Id, user.Role.ToString());

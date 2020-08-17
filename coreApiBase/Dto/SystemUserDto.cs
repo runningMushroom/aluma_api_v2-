@@ -1,4 +1,4 @@
-﻿namespace Entities.Dto
+﻿namespace alumaApi.Dto
 {
     public class SystemUserDto : UserBaseDto
     {

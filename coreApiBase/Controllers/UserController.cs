@@ -36,7 +36,7 @@ namespace alumaApi.Controllers
         }
 
         [HttpPost("create"), AllowAnonymous]
-        public IActionResult Create([FromBody] UserDto dto)
+        public IActionResult Create([FromBody] UserModelDto dto)
         {
             try
             {

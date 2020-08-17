@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Entities.Dto;
 using alumaApi.Dto;
 using alumaApi.Models;
 
@@ -12,7 +11,8 @@ namespace alumaApi
             // Users
             CreateMap<RegistrationDto, UserModel>()
                 .ReverseMap();
-            CreateMap<UserModel, UserDto>()
+
+            CreateMap<UserModel, UserModelDto>()
                 .ReverseMap();
         }
     }

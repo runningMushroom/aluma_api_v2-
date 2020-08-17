@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Entities.Dto
+namespace alumaApi.Dto
 {
     public class UserBaseDto
     {
