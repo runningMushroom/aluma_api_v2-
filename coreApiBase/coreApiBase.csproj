@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>vueBuilderApi</AssemblyName>
-    <RootNamespace>vueBuilderApi</RootNamespace>
+    <AssemblyName>alumaApi</AssemblyName>
+    <RootNamespace>alumaApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

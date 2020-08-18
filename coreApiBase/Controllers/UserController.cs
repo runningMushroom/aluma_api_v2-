@@ -12,8 +12,6 @@ using Microsoft.Extensions.Logging;
 using alumaApi.Models;
 using Entities.Dto;
 
-using alumaApi.Models;
-
 using alumaApi.Enum;
 using System.Linq;
 

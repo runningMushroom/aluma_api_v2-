@@ -2,7 +2,6 @@
 using StringHasher;
 using TokenProvider;
 using alumaApi.Data;
-using alumaApi.Interfaces;
 using alumaApi.Repositories;
 using BulkSms;
 
@@ -13,6 +12,8 @@ namespace alumaApi.RepoWrapper
     public class Wrapper : IWrapper
     {
         private DefaultDbContext _dbContext;
+        private IApplicationRepo _application;
+        private IApplicationStepRepo _applicationStep;
         private IOtpRepo _otp;
         private IUserRepo _user;
         private IBulkSmsRepo _bulkSMs;
@@ -24,6 +25,16 @@ namespace alumaApi.RepoWrapper
         public Wrapper(DefaultDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public IApplicationRepo Applications
+        {
+            get { return _application == null ? new ApplicationRepo(_dbContext) : _application; }
+        }
+
+        public IApplicationStepRepo ApplicationSteps
+        {
+            get { return _applicationStep == null ? new ApplicationStepRepo(_dbContext) : _applicationStep; }
         }
 
         public IOtpRepo Otp

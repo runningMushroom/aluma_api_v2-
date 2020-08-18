@@ -1,14 +1,16 @@
 ﻿using MailSender;
 using StringHasher;
 using TokenProvider;
-using alumaApi.Interfaces;
 using BulkSms;
 using JwtAuthentication;
+using alumaApi.Repositories;
 
 namespace alumaApi.RepoWrapper
 {
     public interface IWrapper
     {
+        IApplicationRepo Applications { get; }
+        IApplicationStepRepo ApplicationSteps { get; }
         IOtpRepo Otp { get; }
         IUserRepo User { get; }
 
