@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,48 @@ namespace alumaApi.Controllers
                 var dto = _mapper.Map<ApplicationDto>(application);
 
                 return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list")]
+        public IActionResult GetList()
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var applList = _repo.Applications
+                    .FindByCondition(c => c.UserId == claims.UserId)
+                    .Include(c => c.Steps)
+                    .ToList();
+
+                return Ok(_mapper.Map<List<ApplicationDto>>(applList));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var application = _repo.Applications
+                    .FindByCondition(c => c.UserId == claims.UserId && c.Id == id)
+                    .Include(c => c.Steps);
+
+                if (!application.Any())
+                    return StatusCode(404, "Application not found");
+
+                return Ok(_mapper.Map<ApplicationDto>(application.First()));
             }
             catch (Exception e)
             {

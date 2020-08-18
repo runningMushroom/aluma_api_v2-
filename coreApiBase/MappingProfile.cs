@@ -10,21 +10,23 @@ namespace alumaApi
     {
         public MappingProfile()
         {
-            // Applications
+            // ApplicationSteps
             CreateMap<ApplicationStepModel, ApplicationStepsDto>()
                 .ForMember(d => d.StepType, opt => opt.ConvertUsing(new ApplStepTypeEnumToString()))
                 .ReverseMap();
 
+            // Applications
             CreateMap<ApplicationsModel, ApplicationDto>()
                 .ForMember(
                     dest => dest.Steps,
                     opt => opt.MapFrom(src => src.Steps))
                 .ReverseMap();
 
-            // Users
+            // Users Regsitration
             CreateMap<RegistrationDto, UserModel>()
                 .ReverseMap();
 
+            // Users
             CreateMap<UserModel, UserModelDto>()
                 .ReverseMap();
         }
