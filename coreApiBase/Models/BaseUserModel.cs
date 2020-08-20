@@ -1,4 +1,4 @@
-﻿using alumaApi.Static;
+﻿using alumaApi.Models.Static;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,7 +26,7 @@ namespace alumaApi.Models
         public string Password { get; set; }
 
         [Required]
-        public RoleEnum Role { get; set; }
+        public string Role { get; set; }
 
         public bool MobileVerified { get; set; }
 

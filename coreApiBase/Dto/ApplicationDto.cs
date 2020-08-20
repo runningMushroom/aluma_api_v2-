@@ -9,6 +9,8 @@ namespace alumaApi.Dto
     {
         public Guid Id { get; set; }
 
+        public UserDto User { get; set; }
+
         public bool Signed { get; set; }
 
         public string Description { get; set; }

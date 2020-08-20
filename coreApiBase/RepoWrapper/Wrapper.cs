@@ -12,6 +12,9 @@ namespace alumaApi.RepoWrapper
     public class Wrapper : IWrapper
     {
         private DefaultDbContext _dbContext;
+
+        private IAdvisorAdvisedProductsRepo _advisorAdvisedProducts;
+        private IAdvisorAdviseRepo _advisorAdvise;
         private IApplicationRepo _application;
         private IApplicationStepRepo _applicationStep;
         private IOtpRepo _otp;
@@ -25,6 +28,16 @@ namespace alumaApi.RepoWrapper
         public Wrapper(DefaultDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        public IAdvisorAdvisedProductsRepo AdvisorAdvisedProducts
+        {
+            get { return _advisorAdvisedProducts == null ? new AdvisorAdvisedProductsRepo(_dbContext) : _advisorAdvisedProducts; }
+        }
+
+        public IAdvisorAdviseRepo AdvisorAdvise
+        {
+            get { return _advisorAdvise == null ? new AdvisorAdviseRepo(_dbContext) : _advisorAdvise; }
         }
 
         public IApplicationRepo Applications

@@ -9,6 +9,8 @@ namespace alumaApi.RepoWrapper
 {
     public interface IWrapper
     {
+        IAdvisorAdvisedProductsRepo AdvisorAdvisedProducts { get; }
+        IAdvisorAdviseRepo AdvisorAdvise { get; }
         IApplicationRepo Applications { get; }
         IApplicationStepRepo ApplicationSteps { get; }
         IOtpRepo Otp { get; }

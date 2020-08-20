@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200820113629_009")]
+    partial class _009
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,9 +217,8 @@ namespace alumaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -232,22 +233,6 @@ namespace alumaApi.Migrations
                         .HasFilter("[MobileNumber] IS NOT NULL");
 
                     b.ToTable("users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("73b8c55e-c6b1-4db8-a80d-87e572e7c429"),
-                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "root@aluma.co.za",
-                            FirstName = "rootUser",
-                            IdNumber = "9000000000000",
-                            LastName = "root",
-                            MobileNumber = "0810000000",
-                            MobileVerified = true,
-                            Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9202.JGh779tbaYphUjkfA9DP1A==.iPIjC/lxm6eK5H8R3efNTfb7KFby30g8Cq0/7QRs5h4=",
-                            Role = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("alumaApi.Models.AdvisorAdvisedProductsModel", b =>

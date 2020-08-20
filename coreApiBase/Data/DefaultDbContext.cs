@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using alumaApi.Models;
-
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace alumaApi.Data
@@ -15,8 +14,11 @@ namespace alumaApi.Data
         {
             mb.ApplyConfiguration(new UserModelBuilder());
             mb.ApplyConfiguration(new ApplicationModelBuilder());
+            mb.ApplyConfiguration(new AdvisorAdviseModelBuilder());
         }
 
+        public DbSet<AdvisorAdvisedProductsModel> AdvisorAdvisedProducts { get; set; }
+        public DbSet<AdvisorAdviseModel> AdvisorAdvise { get; set; }
         public DbSet<ApplicationsModel> Applications { get; set; }
         public DbSet<ApplicationStepModel> ApplicationSteps { get; set; }
         public DbSet<OtpModel> Otp { get; set; }

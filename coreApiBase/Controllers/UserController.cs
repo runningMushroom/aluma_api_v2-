@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using AutoMapper;
 using alumaApi.Dto;
 using alumaApi.RepoWrapper;
-using alumaApi.Static;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using alumaApi.Models;
-using Entities.Dto;
 
 using alumaApi.Enum;
 using System.Linq;
+using alumaApi.Models.Static;
 
 namespace alumaApi.Controllers
 {
@@ -34,7 +33,7 @@ namespace alumaApi.Controllers
         }
 
         [HttpPost("create"), AllowAnonymous]
-        public IActionResult Create([FromBody] UserModelDto dto)
+        public IActionResult Create([FromBody] UserDto dto)
         {
             try
             {
@@ -44,7 +43,7 @@ namespace alumaApi.Controllers
 
                 // map dto to user obj
                 var user = _mapper.Map<UserModel>(dto);
-                user.Role = RoleEnum.Client;
+                user.Role = Roles.Client;
 
                 // hash user password
                 user.Password = _repo.StrHasher.CreateHash(dto.Password);

@@ -27,7 +27,7 @@ namespace alumaApi
                 .ReverseMap();
 
             // Users
-            CreateMap<UserModel, UserModelDto>()
+            CreateMap<UserModel, UserDto>()
                 .ReverseMap();
         }
     }

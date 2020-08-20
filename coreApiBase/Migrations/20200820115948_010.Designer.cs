@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200820115948_010")]
+    partial class _010
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,9 +217,8 @@ namespace alumaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -236,7 +237,7 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("73b8c55e-c6b1-4db8-a80d-87e572e7c429"),
+                            Id = new Guid("e082541f-98f2-4048-be49-220811389a98"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
@@ -245,8 +246,8 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9202.JGh779tbaYphUjkfA9DP1A==.iPIjC/lxm6eK5H8R3efNTfb7KFby30g8Cq0/7QRs5h4=",
-                            Role = "Admin"
+                            Password = "9912.L5U0VnRoBsRvMdVda9CTWQ==.wwfKd7VeIw9PU3mVTmTQjWbY2VG5TCvJjE0gHy4vlWA=",
+                            Role = 0
                         });
                 });
 

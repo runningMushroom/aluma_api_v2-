@@ -19,14 +19,14 @@ namespace alumaApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("client/{email}/{password}")]
+        [HttpGet("{email}/{password}")]
         public IActionResult AuthClient(string email, string password)
         {
             try
             {
                 // get account where emails match
                 if (!_repo.User.FindByCondition(c => c.Email == email).Any())
-                    return StatusCode(401, "Credentials Invalid");
+                    return StatusCode(401, "Credentials Invalid.");
 
                 var user = _repo.User.FindByCondition(c => c.Email == email).First();
 
@@ -34,10 +34,10 @@ namespace alumaApi.Controllers
                 if (!_repo.StrHasher.ValidateHash(user.Password, password))
                     return StatusCode(401, "Credentials Invalid");
 
-                var userDto = _mapper.Map<UserModelDto>(user);
+                var userDto = _mapper.Map<UserDto>(user);
 
                 // generate jwt token
-                userDto.Token = _repo.Jwt.CreateJwtToken(user.Id, user.Role.ToString());
+                userDto.Token = _repo.Jwt.CreateJwtToken(user.Id, user.Role);
 
                 return Ok(userDto);
             }
