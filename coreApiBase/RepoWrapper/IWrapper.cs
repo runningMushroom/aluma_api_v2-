@@ -17,8 +17,8 @@ namespace alumaApi.RepoWrapper
         IUserRepo User { get; }
 
         // from other sources
-        IBulkSmsRepo BulkSms { get; }
 
+        IBulkSmsRepo BulkSms { get; }
         IJwtRepo Jwt { get; }
         IStringHasher StrHasher { get; }
         IMailSender SendMail { get; }

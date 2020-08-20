@@ -45,39 +45,5 @@ namespace alumaApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("requires/advise")]
-        public IActionResult ListApplicationsWithoutAdvice()
-        {
-            try
-            {
-                // find all advisor advice application steps that haven't been completed
-                var stepList = _repo.ApplicationSteps
-                    .FindByCondition(
-                        c => c.StepType == ApplicationStepTypesEnum.AdvisorAdvice
-                        && c.Complete == false)
-                    .ToList();
-
-                // create a list of all the application Id's
-                var applicationIds = new List<Guid>();
-                stepList.ForEach(c =>
-                {
-                    applicationIds.Add(c.ApplicationId);
-                });
-
-                // retreive all the applications
-                var applList = _repo.Applications
-                    .FindByCondition(c => applicationIds.Contains(c.Id))
-                    .Include(c => c.User)
-                    .ToList();
-
-                // map applications to dto & return list
-                return Ok(_mapper.Map<List<ApplicationDto>>(applList));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
     }
 }

@@ -19,6 +19,7 @@ namespace alumaApi.RepoWrapper
         private IApplicationStepRepo _applicationStep;
         private IOtpRepo _otp;
         private IUserRepo _user;
+
         private IBulkSmsRepo _bulkSMs;
         private IJwtRepo _jwt;
         private IStringHasher _hasher;

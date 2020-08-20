@@ -10,6 +10,14 @@ namespace alumaApi
     {
         public MappingProfile()
         {
+            // AdvisorAdvise
+            CreateMap<AdvisorAdvisedProductsModel, AdvisorAdvisedProductsDto>()
+                .ReverseMap();
+
+            // AdvisorAdvisedProducts
+            CreateMap<AdvisorAdviseModel, AdvisorAdviseDto>()
+                .ReverseMap();
+
             // ApplicationSteps
             CreateMap<ApplicationStepModel, ApplicationStepsDto>()
                 .ForMember(d => d.StepType, opt => opt.ConvertUsing(new ApplStepTypeEnumToString()))
