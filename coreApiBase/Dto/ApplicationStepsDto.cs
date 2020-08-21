@@ -10,6 +10,8 @@ namespace alumaApi.Dto
         public Guid Id { get; set; }
         public string StepType { get; set; }
         public Guid DataId { get; set; }
+        public int FactoryId { get; set; }
+        public string FactoryStep { get; set; }
         public int Order { get; set; }
         public bool ActiveStep { get; set; }
         public bool Complete { get; set; }

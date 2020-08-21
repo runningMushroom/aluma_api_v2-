@@ -3,9 +3,11 @@ using alumaApi.Enum;
 using alumaApi.Models;
 using alumaApi.RepoWrapper;
 using AutoMapper;
+using KycFactory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -120,6 +122,42 @@ namespace alumaApi.Controllers
                 var currentStep = application.First().Steps.First(c => c.ActiveStep);
 
                 return Ok(_mapper.Map<ApplicationStepsDto>(currentStep));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("kyc/event/update"), AllowAnonymous]
+        public IActionResult KycEventUpdate([FromBody] KycEventDto dto)
+        {
+            var step = _repo.ApplicationSteps
+                .FindByCondition(
+                    c => c.FactoryId == dto.FactoryId &&
+                    c.StepType == ApplicationStepTypesEnum.DigitalKyc)
+                .First();
+
+            step.FactoryStep = dto.CurrentStep;
+
+            _repo.ApplicationSteps.Update(step);
+            _repo.Save();
+
+            return Ok();
+        }
+
+        [HttpGet("kyc/progress/{applicationId}")]
+        public IActionResult GetKycProgress(Guid applicationId)
+        {
+            try
+            {
+                var step = _repo.ApplicationSteps
+                    .FindByCondition(
+                        c => c.ApplicationId == applicationId &&
+                        c.StepType == ApplicationStepTypesEnum.DigitalKyc)
+                    .First();
+
+                return Ok(new { factoryStep = step.FactoryStep });
             }
             catch (Exception e)
             {

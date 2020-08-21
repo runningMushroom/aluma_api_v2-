@@ -164,23 +164,7 @@ namespace alumaApi.Controllers
             }
         }
 
-        private ApplicationStepModel AdvanceStep(Guid applicationId, ApplicationStepModel step)
-        {
-            var application = _repo.Applications
-                .FindByCondition(c => c.Id == applicationId)
-                .First();
-
-            switch (step.StepType)
-            {
-                case ApplicationStepTypesEnum.AdvisorAdvise:
-                    return CompleteAdvisorAdvise(applicationId, step);
-
-                default:
-                    throw new InvalidEnumArgumentException("Invalid Application step type");
-            }
-        }
-
-        private ApplicationStepModel CompleteAdvisorAdvise(Guid applicationId, ApplicationStepModel currentStep)
+        private ApplicationStepModel AdvanceStep(Guid applicationId, ApplicationStepModel currentStep)
         {
             // change the current step (advisor advice) to complete & update
             currentStep.ActiveStep = false;

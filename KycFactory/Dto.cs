@@ -34,4 +34,16 @@ namespace KycFactory
         public int FactoryId { get; set; }
         public int NextStep { get; set; }
     }
+
+    public class KycEventDto
+    {
+        public string EventDate { get; set; }
+        public int FactoryId { get; set; }
+        public string Identity { get; set; }
+        public string EventType { get; set; }
+        public string IdentityType { get; set; }
+        public string EventResult { get; set; }
+        public string CurrentStep { get; set; }
+        public string NextStep { get; set; }
+    }
 }
