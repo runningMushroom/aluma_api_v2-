@@ -145,13 +145,13 @@ namespace alumaApi.Controllers
             {
                 return StatusCode(404, e.Message);
             }
-            catch (DbUpdateException e)
-            {
-                return StatusCode(501, e.Message);
-            }
             catch (InvalidEnumArgumentException e)
             {
                 return StatusCode(404, e.Message);
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(501, e.Message);
             }
             catch (HttpRequestException e)
             {
