@@ -96,6 +96,7 @@ namespace alumaApi.Controllers
                 var step = stepList.First();
 
                 step.StepType = ApplicationStepTypesEnum.ManualKyc;
+                step.FactoryStep = null;
                 _repo.ApplicationSteps.Update(step);
                 _repo.Save();
 

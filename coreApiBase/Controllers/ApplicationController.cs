@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace alumaApi.Controllers
@@ -132,37 +133,69 @@ namespace alumaApi.Controllers
         [HttpPost("kyc/event/update"), AllowAnonymous]
         public IActionResult KycEventUpdate([FromBody] KycEventDto dto)
         {
-            var step = _repo.ApplicationSteps
-                .FindByCondition(
-                    c => c.FactoryId == dto.FactoryId &&
-                    c.StepType == ApplicationStepTypesEnum.DigitalKyc)
-                .First();
+            if (dto.CurrentStep.ToLower() == "complete")
+            {
+                // get the applicaiton id & pass it to change application step
+                ChangeApplicationStep(_repo.ApplicationSteps
+                    .FindByCondition(c => c.FactoryId == dto.FactoryId)
+                    .First().ApplicationId);
+            }
+            else
+            {
+                // get the application step & update the last completed kyc step
+                var step = _repo.ApplicationSteps
+                    .FindByCondition(c => c.FactoryId == dto.FactoryId)
+                    .First();
 
-            step.FactoryStep = dto.CurrentStep;
-
-            _repo.ApplicationSteps.Update(step);
-            _repo.Save();
+                step.FactoryStep = dto.CurrentStep.ToLower();
+                _repo.ApplicationSteps.Update(step);
+                _repo.Save();
+            }
 
             return Ok();
         }
 
-        [HttpGet("kyc/progress/{applicationId}")]
-        public IActionResult GetKycProgress(Guid applicationId)
+        private void ChangeApplicationStep(Guid applicationId)
         {
-            try
-            {
-                var step = _repo.ApplicationSteps
-                    .FindByCondition(
-                        c => c.ApplicationId == applicationId &&
-                        c.StepType == ApplicationStepTypesEnum.DigitalKyc)
-                    .First();
+            // get the current step for this application
+            var currentStep = _repo.ApplicationSteps
+                .FindByCondition(c => c.ApplicationId == applicationId && c.ActiveStep)
+                .First();
 
-                return Ok(new { factoryStep = step.FactoryStep });
-            }
-            catch (Exception e)
+            // set the step inactive and complete
+            currentStep.ActiveStep = false;
+            currentStep.Complete = true;
+            _repo.ApplicationSteps.Update(currentStep);
+
+            // get the next step to be completed
+            var nextStep = ReturnNextStep(applicationId, currentStep.Order);
+
+            switch (currentStep.StepType)
             {
-                return StatusCode(500, e.Message);
+                case ApplicationStepTypesEnum.DigitalKyc:
+                    // TODO: Get KYC Meta Data & save it
+
+                    // set nextStep to active & save
+                    nextStep.ActiveStep = true;
+                    _repo.ApplicationSteps.Update(nextStep);
+                    _repo.Save();
+                    break;
+
+                default:
+                    throw new InvalidEnumArgumentException("Invalid step");
             }
+        }
+
+        private ApplicationStepModel ReturnNextStep(Guid applicationId, int currentStep)
+        {
+            var step = _repo.ApplicationSteps
+                .FindByCondition(
+                    c => c.ApplicationId == applicationId &&
+                    c.Order == (currentStep + 1));
+
+            if (!step.Any()) throw new NullReferenceException("Couldn't find next step");
+
+            return step.First();
         }
     }
 }

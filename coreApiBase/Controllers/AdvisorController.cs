@@ -18,13 +18,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace alumaApi.Controllers
 {
-    [ApiController, Route("api/v1/advisor/advice"), Authorize(Roles = "Admin,Broker")]
-    public class AdvisorAdviseController : ControllerBase
+    [ApiController, Route("api/v1/advisor"), Authorize(Roles = "Admin,Broker")]
+    public class AdvisorController : ControllerBase
     {
         private readonly IWrapper _repo;
         private readonly IMapper _mapper;
 
-        public AdvisorAdviseController(IWrapper repo, IMapper mapper)
+        public AdvisorController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
@@ -45,7 +45,7 @@ namespace alumaApi.Controllers
             }
         }
 
-        [HttpGet("required/list")]
+        [HttpGet("advice/required/list")]
         public IActionResult ListApplicationsWithoutAdvice()
         {
             try
@@ -79,7 +79,7 @@ namespace alumaApi.Controllers
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("advice/create")]
         public IActionResult Create([FromBody] AdvisorAdviseDto dto)
         {
             try
