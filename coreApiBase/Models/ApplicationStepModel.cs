@@ -17,6 +17,7 @@ namespace alumaApi.Models
         public ApplicationStepTypesEnum StepType { get; set; }
         public Guid DataId { get; set; }
         public string ScheduleType { get; set; }
+        public int FactoryId { get; set; }
         public int Order { get; set; }
         public bool ActiveStep { get; set; }
         public bool Complete { get; set; }

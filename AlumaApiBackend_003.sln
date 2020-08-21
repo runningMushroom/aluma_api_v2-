@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BulkSms", "BulkSms\BulkSms.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthentication", "..\..\classLibraries\dotnet3\JwtAuthentication\JwtAuthentication.csproj", "{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KycFactory", "KycFactory\KycFactory.csproj", "{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

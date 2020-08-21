@@ -4,6 +4,7 @@ using TokenProvider;
 using BulkSms;
 using JwtAuthentication;
 using alumaApi.Repositories;
+using KycFactory;
 
 namespace alumaApi.RepoWrapper
 {
@@ -20,6 +21,7 @@ namespace alumaApi.RepoWrapper
 
         IBulkSmsRepo BulkSms { get; }
         IJwtRepo Jwt { get; }
+        IKycFactoryRepo KycFactory { get; }
         IStringHasher StrHasher { get; }
         IMailSender SendMail { get; }
         ITokenProvider TokenProvider { get; }

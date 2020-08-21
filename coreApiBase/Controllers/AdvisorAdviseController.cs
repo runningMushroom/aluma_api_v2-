@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using alumaApi.Dto;
 using alumaApi.Enum;
 using alumaApi.Models;
 using alumaApi.RepoWrapper;
 using AutoMapper;
+using KycFactory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +34,15 @@ namespace alumaApi.Controllers
         public IActionResult test()
         {
             //_repo.Applications.AdvanceStep();
-            return Ok();
+            try
+            {
+                bool a = _repo.KycFactory.testException();
+                return Ok();
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode(503, e.Message);
+            }
         }
 
         [HttpGet("required/list")]
@@ -91,12 +101,43 @@ namespace alumaApi.Controllers
                 _repo.AdvisorAdvise.Create(advise);
 
                 // update the application steps
-                AdvanceStep(advise.ApplicationId, step);
+                var digitalKycStep = AdvanceStep(advise.ApplicationId, step);
 
                 // save all changes
                 _repo.Save();
 
+                // get the user that this application belongs to
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == dto.ApplicationId)
+                    .First();
+
+                var user = _repo.User
+                    .FindByCondition(c => c.Id == application.UserId)
+                    .First();
+
                 // do request to kyc to start KYC
+                var kycResponse = _repo.KycFactory.InitiateKycFactory(new KycInitiationDto()
+                {
+                    Consumers = new List<ConsumerDto>()
+                    {
+                        new ConsumerDto()
+                        {
+                            LastName = user.LastName,
+                            FirstName = user.FirstName,
+                            IdNumber = user.IdNumber,
+                            Email = user.Email,
+                            MobileNumber = user.MobileNumber,
+                            SendEmail = true,
+                            IsCurrent = false
+                        }
+                    }
+                });
+
+                // save the factoryId
+
+                digitalKycStep.FactoryId = kycResponse.FactoryId;
+                _repo.ApplicationSteps.Update(digitalKycStep);
+                _repo.Save();
 
                 return StatusCode(201);
             }
@@ -112,13 +153,17 @@ namespace alumaApi.Controllers
             {
                 return StatusCode(404, e.Message);
             }
+            catch (HttpRequestException e)
+            {
+                return StatusCode(503, e.Message);
+            }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
 
-        private void AdvanceStep(Guid applicationId, ApplicationStepModel step)
+        private ApplicationStepModel AdvanceStep(Guid applicationId, ApplicationStepModel step)
         {
             var application = _repo.Applications
                 .FindByCondition(c => c.Id == applicationId)
@@ -127,15 +172,14 @@ namespace alumaApi.Controllers
             switch (step.StepType)
             {
                 case ApplicationStepTypesEnum.AdvisorAdvice:
-                    CompleteAdvisorAdvise(applicationId, step);
-                    break;
+                    return CompleteAdvisorAdvise(applicationId, step);
 
                 default:
                     throw new InvalidEnumArgumentException("Invalid Application step type");
             }
         }
 
-        private void CompleteAdvisorAdvise(Guid applicationId, ApplicationStepModel currentStep)
+        private ApplicationStepModel CompleteAdvisorAdvise(Guid applicationId, ApplicationStepModel currentStep)
         {
             // change the current step (advisor advice) to complete & update
             currentStep.ActiveStep = false;
@@ -152,6 +196,8 @@ namespace alumaApi.Controllers
 
             // update changes
             _repo.ApplicationSteps.Update(nextStep);
+
+            return nextStep;
         }
     }
 }

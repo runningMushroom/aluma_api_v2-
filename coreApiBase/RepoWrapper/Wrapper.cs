@@ -6,6 +6,7 @@ using alumaApi.Repositories;
 using BulkSms;
 
 using JwtAuthentication;
+using KycFactory;
 
 namespace alumaApi.RepoWrapper
 {
@@ -22,6 +23,7 @@ namespace alumaApi.RepoWrapper
 
         private IBulkSmsRepo _bulkSMs;
         private IJwtRepo _jwt;
+        private IKycFactoryRepo _kyc;
         private IStringHasher _hasher;
         private IMailSender _mailSender;
         private ITokenProvider _tokenProvider;
@@ -70,6 +72,11 @@ namespace alumaApi.RepoWrapper
         public IJwtRepo Jwt
         {
             get { return _jwt == null ? new JwtRepo() : _jwt; }
+        }
+
+        public IKycFactoryRepo KycFactory
+        {
+            get { return _kyc == null ? new KycFactoryRepo() : _kyc; }
         }
 
         public IStringHasher StrHasher
