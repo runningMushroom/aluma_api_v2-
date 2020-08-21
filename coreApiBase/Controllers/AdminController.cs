@@ -90,7 +90,8 @@ namespace alumaApi.Controllers
                 var stepList = _repo.ApplicationSteps
                     .FindByCondition(c => c.Id == stepId);
 
-                if (!stepList.Any()) throw new NullReferenceException("Could not find Application Step for given ID");
+                if (!stepList.Any())
+                    throw new NullReferenceException("Could not find Application Step for given ID");
 
                 var step = stepList.First();
 
@@ -103,10 +104,6 @@ namespace alumaApi.Controllers
             catch (DbUpdateException e)
             {
                 return StatusCode(512, "Error while trying to update database");
-            }
-            catch (NullReferenceException e)
-            {
-                return StatusCode(404, e.Message);
             }
             catch (Exception e)
             {

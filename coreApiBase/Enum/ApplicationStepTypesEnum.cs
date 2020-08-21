@@ -7,7 +7,7 @@ namespace alumaApi.Enum
 {
     public enum ApplicationStepTypesEnum
     {
-        AdvisorAdvice,
+        AdvisorAdvise,
         DigitalKyc,
         ManualKyc,
         BankValidation,

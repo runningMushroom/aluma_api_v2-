@@ -53,7 +53,7 @@ namespace alumaApi.Controllers
                 // find all advisor advice application steps that haven't been completed
                 var stepList = _repo.ApplicationSteps
                     .FindByCondition(
-                        c => c.StepType == ApplicationStepTypesEnum.AdvisorAdvice
+                        c => c.StepType == ApplicationStepTypesEnum.AdvisorAdvise
                         && c.Complete == false)
                     .ToList();
 
@@ -116,26 +116,27 @@ namespace alumaApi.Controllers
                     .First();
 
                 // do request to kyc to start KYC
-                var kycResponse = _repo.KycFactory.InitiateKycFactory(new KycInitiationDto()
-                {
-                    Consumers = new List<ConsumerDto>()
-                    {
-                        new ConsumerDto()
-                        {
-                            LastName = user.LastName,
-                            FirstName = user.FirstName,
-                            IdNumber = user.IdNumber,
-                            Email = user.Email,
-                            MobileNumber = user.MobileNumber,
-                            SendEmail = true,
-                            IsCurrent = false
-                        }
-                    }
-                });
+                //var kycResponse = _repo.KycFactory.InitiateKycFactory(new KycInitiationDto()
+                //{
+                //    Consumers = new List<ConsumerDto>()
+                //    {
+                //        new ConsumerDto()
+                //        {
+                //            LastName = user.LastName,
+                //            FirstName = user.FirstName,
+                //            IdNumber = user.IdNumber,
+                //            Email = user.Email,
+                //            MobileNumber = user.MobileNumber,
+                //            SendEmail = true,
+                //            IsCurrent = false
+                //        }
+                //    }
+                //});
 
                 // save the factoryId
 
-                digitalKycStep.FactoryId = kycResponse.FactoryId;
+                //digitalKycStep.FactoryId = kycResponse.FactoryId;
+                digitalKycStep.FactoryId = 1714;
                 _repo.ApplicationSteps.Update(digitalKycStep);
                 _repo.Save();
 
@@ -171,7 +172,7 @@ namespace alumaApi.Controllers
 
             switch (step.StepType)
             {
-                case ApplicationStepTypesEnum.AdvisorAdvice:
+                case ApplicationStepTypesEnum.AdvisorAdvise:
                     return CompleteAdvisorAdvise(applicationId, step);
 
                 default:

@@ -26,7 +26,7 @@ namespace alumaApi.Repositories
             // 1:  Advisor Advice
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.AdvisorAdvice,
+                StepType = ApplicationStepTypesEnum.AdvisorAdvise,
                 ActiveStep = true,
                 ApplicationId = applicationId,
                 Order = 1,

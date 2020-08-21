@@ -104,5 +104,27 @@ namespace alumaApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("current/step/{applicationId}")]
+        public IActionResult CurrentStep(Guid applicationId)
+        {
+            try
+            {
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == applicationId)
+                    .Include(c => c.Steps);
+
+                if (!application.Any())
+                    throw new NullReferenceException("Could not find Application Step for given ID");
+
+                var currentStep = application.First().Steps.First(c => c.ActiveStep);
+
+                return Ok(_mapper.Map<ApplicationStepsDto>(currentStep));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
