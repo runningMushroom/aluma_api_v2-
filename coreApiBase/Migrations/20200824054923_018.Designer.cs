@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200824054923_018")]
+    partial class _018
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -488,9 +490,6 @@ namespace alumaApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Complex")
                         .HasColumnType("nvarchar(max)");
 
@@ -500,13 +499,25 @@ namespace alumaApi.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FaxNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HomeNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MobileNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PA_City")
+                    b.Property<string>("PA_AddressLine_1")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PA_Complex")
+                    b.Property<string>("PA_AddressLine_2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PA_AddressLine_3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PA_AddressLine_4")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PA_Country")
@@ -515,23 +526,14 @@ namespace alumaApi.Migrations
                     b.Property<string>("PA_PostalCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PA_StreetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PA_StreetNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PA_Suburb")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PA_UnitNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("PostalInCare")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PostalInCareName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PostalSameAsResidentual")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
@@ -852,7 +854,7 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("59c2dac2-89e8-49f0-ac59-f408d4d3eea6"),
+                            Id = new Guid("c27352ce-cbc7-4aa2-872c-d6ad3cd73654"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
@@ -861,7 +863,7 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9627.w4KQ+piAmzYuM6oA075+Hw==.Kd46aDRUC2lJcRbW/IeIToxAk53bs+WX4QtSrDbbDyc=",
+                            Password = "9078.GodWffdadgInVxanb/sMSg==.YQgQsQ+5cFDQgbCIx47/G0JrP6qbnbiwxJ424sTZlPo=",
                             Role = "Admin"
                         });
                 });
@@ -950,7 +952,7 @@ namespace alumaApi.Migrations
             modelBuilder.Entity("alumaApi.Models.Schedules.PrimaryIndividual.PurposeAndFundingModel", b =>
                 {
                     b.HasOne("alumaApi.Models.Schedules.PrimaryIndividualModel", "Schedule")
-                        .WithOne("PurposeAndFunding")
+                        .WithOne("purposeAndFunding")
                         .HasForeignKey("alumaApi.Models.Schedules.PrimaryIndividual.PurposeAndFundingModel", "ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

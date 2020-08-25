@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace alumaApi.Controllers
 {
@@ -130,6 +131,21 @@ namespace alumaApi.Controllers
             }
         }
 
+        [HttpGet("skip/current/step/{applicationId}")]
+        public IActionResult SkipStep(Guid applicationId)
+        {
+            try
+            {
+                SkipCurrentStep(applicationId);
+
+                return Ok(200);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
         [HttpPost("kyc/event/update"), AllowAnonymous]
         public IActionResult KycEventUpdate([FromBody] KycEventDto dto)
         {
@@ -153,6 +169,101 @@ namespace alumaApi.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet("documents/list/{applicationId}")]
+        public IActionResult DocumentsList(Guid applicationId)
+        {
+            try
+            {
+                var documentList = _repo.ApplicationDocuments
+                    .FindAll();
+
+                return Ok(_mapper.Map<List<ApplicationDocumentsDto>>(documentList));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("upload/documents")]
+        public IActionResult UploadDocuments([FromBody] List<ApplicationDocumentsDto> dto)
+        {
+            try
+            {
+                var documentList = _mapper.Map<List<ApplicationDocumentsModel>>(dto);
+
+                documentList.ForEach(d => _repo.ApplicationDocuments.Create(d));
+
+                _repo.Save();
+
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("bank/verification/{applicationId}")]
+        public IActionResult GetBankVerification(Guid applicationId)
+        {
+            try
+            {
+                //var bankDetails
+                var bankVerification = _repo.BankVerification
+                    .FindByCondition(c => c.ApplicationId == applicationId)
+                    .First();
+
+                return Ok(bankVerification);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("bank/verification")]
+        public IActionResult PutBankVerification(BankVerificationsModel bankVerification)
+        {
+            try
+            {
+                // get banking step for the given bankverification
+                var step = _repo.ApplicationSteps
+                    .FindByCondition(
+                        c => c.ApplicationId == bankVerification.ApplicationId &&
+                        c.StepType == ApplicationStepTypesEnum.BankValidation)
+                    .First();
+
+                bankVerification.StepId = step.Id;
+
+                // if bank validation exists - update, else create
+                var bankVericationExists = _repo.BankVerification
+                    .FindByCondition(c => c.ApplicationId == bankVerification.ApplicationId);
+
+                if (bankVericationExists.Any())
+                {
+                    var existingBankValidation = bankVericationExists.First();
+                    existingBankValidation = bankVerification;
+                    _repo.BankVerification.Update(existingBankValidation);
+                }
+                else
+                {
+                    _repo.BankVerification.Create(bankVerification);
+
+                    // proceed to next stpe
+                    ChangeApplicationStep(bankVerification.ApplicationId);
+                }
+
+                _repo.Save();
+
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         private void ChangeApplicationStep(Guid applicationId)
@@ -181,9 +292,33 @@ namespace alumaApi.Controllers
                     _repo.Save();
                     break;
 
+                case ApplicationStepTypesEnum.BankValidation:
+                    nextStep.ActiveStep = true;
+                    _repo.ApplicationSteps.Update(nextStep);
+                    _repo.Save();
+                    break;
+
                 default:
                     throw new InvalidEnumArgumentException("Invalid step");
             }
+        }
+
+        private void SkipCurrentStep(Guid applicationId)
+        {
+            // get the current step for this application
+            var currentStep = _repo.ApplicationSteps
+                .FindByCondition(c => c.ApplicationId == applicationId && c.ActiveStep)
+                .First();
+
+            currentStep.ActiveStep = false;
+            _repo.ApplicationSteps.Update(currentStep);
+
+            // get the next step to be completed
+            var nextStep = ReturnNextStep(applicationId, currentStep.Order);
+            nextStep.ActiveStep = true;
+            _repo.ApplicationSteps.Update(nextStep);
+
+            _repo.Save();
         }
 
         private ApplicationStepModel ReturnNextStep(Guid applicationId, int currentStep)

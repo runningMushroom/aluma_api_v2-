@@ -16,8 +16,10 @@ namespace alumaApi.Models
         public Guid UserId { get; set; }
         public UserModel User { get; set; }
         public ICollection<ApplicationStepModel> Steps { get; set; }
+        public ICollection<ApplicationDocumentsModel> Documents { get; set; }
         public bool Signed { get; set; }
         public string Description { get; set; }
+        public string BdaNumber { get; set; }
 
         public ApplicationsModel()
         {
@@ -30,6 +32,12 @@ namespace alumaApi.Models
         public void Configure(EntityTypeBuilder<ApplicationsModel> mb)
         {
             mb.HasMany(c => c.Steps)
+                .WithOne(c => c.Application)
+                .HasForeignKey(c => c.ApplicationId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasMany(c => c.Documents)
                 .WithOne(c => c.Application)
                 .HasForeignKey(c => c.ApplicationId)
                 .IsRequired()

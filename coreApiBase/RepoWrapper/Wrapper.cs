@@ -7,6 +7,7 @@ using BulkSms;
 
 using JwtAuthentication;
 using KycFactory;
+using alumaApi.Repositories.Shedules;
 
 namespace alumaApi.RepoWrapper
 {
@@ -16,10 +17,15 @@ namespace alumaApi.RepoWrapper
 
         private IAdvisorAdvisedProductsRepo _advisorAdvisedProducts;
         private IAdvisorAdviseRepo _advisorAdvise;
+        private IApplicationDocumentsRepo _applicationDocuments;
         private IApplicationRepo _application;
         private IApplicationStepRepo _applicationStep;
+        private IBankVerificationRepo _bankVerification;
         private IOtpRepo _otp;
         private IUserRepo _user;
+
+        // Schedules
+        private IPrimaryIndividualRepo _primaryIndividual;
 
         private IBulkSmsRepo _bulkSMs;
         private IJwtRepo _jwt;
@@ -43,6 +49,11 @@ namespace alumaApi.RepoWrapper
             get { return _advisorAdvise == null ? new AdvisorAdviseRepo(_dbContext) : _advisorAdvise; }
         }
 
+        public IApplicationDocumentsRepo ApplicationDocuments
+        {
+            get { return _applicationDocuments == null ? new ApplicationDocumentsRepo(_dbContext) : _applicationDocuments; }
+        }
+
         public IApplicationRepo Applications
         {
             get { return _application == null ? new ApplicationRepo(_dbContext) : _application; }
@@ -53,6 +64,11 @@ namespace alumaApi.RepoWrapper
             get { return _applicationStep == null ? new ApplicationStepRepo(_dbContext) : _applicationStep; }
         }
 
+        public IBankVerificationRepo BankVerification
+        {
+            get { return _bankVerification == null ? new BankVerificationRepo(_dbContext) : _bankVerification; }
+        }
+
         public IOtpRepo Otp
         {
             get { return _otp == null ? new OtpRepo(_dbContext) : _otp; }
@@ -61,6 +77,13 @@ namespace alumaApi.RepoWrapper
         public IUserRepo User
         {
             get { return _user == null ? new UserRepo(_dbContext) : _user; }
+        }
+
+        // Primary Schedules
+
+        public IPrimaryIndividualRepo PrimaryIndividual
+        {
+            get { return _primaryIndividual == null ? new PrimaryIndividualRepo(_dbContext) : _primaryIndividual; }
         }
 
         // non db

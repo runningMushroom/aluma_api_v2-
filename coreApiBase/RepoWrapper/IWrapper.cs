@@ -5,6 +5,7 @@ using BulkSms;
 using JwtAuthentication;
 using alumaApi.Repositories;
 using KycFactory;
+using alumaApi.Repositories.Shedules;
 
 namespace alumaApi.RepoWrapper
 {
@@ -12,10 +13,15 @@ namespace alumaApi.RepoWrapper
     {
         IAdvisorAdvisedProductsRepo AdvisorAdvisedProducts { get; }
         IAdvisorAdviseRepo AdvisorAdvise { get; }
+        IApplicationDocumentsRepo ApplicationDocuments { get; }
         IApplicationRepo Applications { get; }
         IApplicationStepRepo ApplicationSteps { get; }
+        IBankVerificationRepo BankVerification { get; }
         IOtpRepo Otp { get; }
         IUserRepo User { get; }
+
+        // Schedules
+        IPrimaryIndividualRepo PrimaryIndividual { get; }
 
         // from other sources
 
