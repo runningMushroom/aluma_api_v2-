@@ -24,7 +24,7 @@ namespace alumaApi.Models
         public string DerivedProfile { get; set; }
         public bool AgreeWithOutcome { get; set; }
         public string Reason { get; set; }
-        public string advisorNotes { get; set; }
+        public string AdvisorNotes { get; set; }
         public string Date { get; set; }
     }
 }

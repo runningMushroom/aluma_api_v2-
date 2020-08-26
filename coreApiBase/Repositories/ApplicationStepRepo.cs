@@ -11,12 +11,17 @@ namespace alumaApi.Repositories
     public interface IApplicationStepRepo : IRepoBase<ApplicationStepModel>
     {
         List<ApplicationStepModel> CreateApplicationSteps(string scheduleType, Guid applicationId);
+
+        ApplicationStepModel ReturnNextStep(Guid applicationId, int currentStep);
     }
 
     public class ApplicationStepRepo : RepoBase<ApplicationStepModel>, IApplicationStepRepo
     {
+        public DefaultDbContext _context;
+
         public ApplicationStepRepo(DefaultDbContext databaseContext) : base(databaseContext)
         {
+            _context = databaseContext;
         }
 
         public List<ApplicationStepModel> CreateApplicationSteps(string scheduleType, Guid applicationId)
@@ -117,6 +122,19 @@ namespace alumaApi.Repositories
             });
 
             return stepList;
+        }
+
+        public ApplicationStepModel ReturnNextStep(Guid applicationId, int currentStep)
+        {
+            var step = _context.ApplicationSteps
+                .Where(
+                    c => c.ApplicationId == applicationId &&
+                    c.Order == currentStep + 1)
+                .First();
+
+            if (step == null) throw new NullReferenceException("Couldn't find next step");
+
+            return step;
         }
     }
 }
