@@ -18,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace alumaApi.Controllers
 {
-    [ApiController, Route("api/v1/advisor"), Authorize(Roles = "Admin,Broker")]
+    [ApiController, Route("api/v1/advisor"), Authorize]
     public class AdvisorController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -30,22 +30,25 @@ namespace alumaApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("test"), AllowAnonymous]
-        public IActionResult test()
+        [HttpGet("advise/for/application/{applicationId}")]
+        public IActionResult GetApplicationAdvise(Guid applicationId)
         {
-            //_repo.Applications.AdvanceStep();
             try
             {
-                bool a = _repo.KycFactory.testException();
-                return Ok();
+                var advise = _repo.AdvisorAdvise
+                    .FindByCondition(c => c.ApplicationId == applicationId)
+                    .Include(c => c.AdvisedProducts)
+                    .First();
+
+                return Ok(_mapper.Map<AdvisorAdviseDto>(advise));
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return StatusCode(503, e.Message);
+                return StatusCode(500, e.Message);
             }
         }
 
-        [HttpGet("advice/required/list")]
+        [HttpGet("advice/required/list"), Authorize(Roles = "Admin,Broker")]
         public IActionResult ListApplicationsWithoutAdvice()
         {
             try
@@ -79,7 +82,7 @@ namespace alumaApi.Controllers
             }
         }
 
-        [HttpPost("advice/create")]
+        [HttpPost("advice/create"), Authorize(Roles = "Admin,Broker")]
         public IActionResult Create([FromBody] AdvisorAdviseDto dto)
         {
             try

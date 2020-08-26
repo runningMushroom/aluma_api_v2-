@@ -18,6 +18,7 @@ namespace alumaApi.RepoWrapper
         IApplicationStepRepo ApplicationSteps { get; }
         IBankVerificationRepo BankVerification { get; }
         IOtpRepo Otp { get; }
+        IRecordOfAdviseRepo RecordOfAdvise { get; }
         IRiskProfileRepo RiskProfile { get; }
         IUserRepo User { get; }
 

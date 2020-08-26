@@ -21,6 +21,7 @@ namespace alumaApi.RepoWrapper
         private IApplicationRepo _application;
         private IApplicationStepRepo _applicationStep;
         private IBankVerificationRepo _bankVerification;
+        private IRecordOfAdviseRepo _recordOfAdvise;
         private IRiskProfileRepo _riskProfile;
         private IOtpRepo _otp;
         private IUserRepo _user;
@@ -73,6 +74,11 @@ namespace alumaApi.RepoWrapper
         public IOtpRepo Otp
         {
             get { return _otp == null ? new OtpRepo(_dbContext) : _otp; }
+        }
+
+        public IRecordOfAdviseRepo RecordOfAdvise
+        {
+            get { return _recordOfAdvise == null ? new RecordOfAdviseRepo(_dbContext) : _recordOfAdvise; }
         }
 
         public IRiskProfileRepo RiskProfile
