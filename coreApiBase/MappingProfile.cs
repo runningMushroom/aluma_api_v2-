@@ -45,6 +45,10 @@ namespace alumaApi
                     opt => opt.MapFrom(src => src.Steps))
                 .ReverseMap();
 
+            // Risk Profile
+            CreateMap<RiskProfileModel, RiskProfileDto>()
+                .ReverseMap();
+
             // Users Regsitration
             CreateMap<RegistrationDto, UserModel>()
                 .ReverseMap();

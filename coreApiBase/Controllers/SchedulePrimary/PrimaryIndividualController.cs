@@ -48,6 +48,7 @@ namespace alumaApi.Controllers.SchedulePrimary
 
                     schedule = _mapper.Map<PrimaryIndividualModel>(dto);
                     _repo.PrimaryIndividual.Update(schedule);
+                    _repo.Save();
                 }
                 else
                 {
@@ -64,6 +65,17 @@ namespace alumaApi.Controllers.SchedulePrimary
                     _repo.PrimaryIndividual.Create(schedule);
                     step.DataId = schedule.Id;
                     _repo.ApplicationSteps.Update(step);
+
+                    // update application steps so that we can go to the next step
+                    step.Complete = true;
+                    step.ActiveStep = false;
+                    _repo.ApplicationSteps.Update(step);
+
+                    var nextStep = ReturnNextStep(dto.ApplicationId, step.Order);
+                    nextStep.ActiveStep = true;
+                    _repo.ApplicationSteps.Update(nextStep);
+
+                    _repo.Save();
                 }
 
                 //_repo.Save();
@@ -85,21 +97,6 @@ namespace alumaApi.Controllers.SchedulePrimary
                     // add Irsw8bene step
                     AddIrsw8beneStep(dto.ApplicationId);
                 }
-
-                // update application steps so that we can go to the next step
-                var currentStep = _repo.ApplicationSteps
-                    .FindByCondition(
-                        c => c.ApplicationId == dto.ApplicationId &&
-                        c.StepType == ApplicationStepTypesEnum.PrimarySchedule)
-                    .First();
-                currentStep.Complete = true;
-                currentStep.ActiveStep = false;
-                _repo.ApplicationSteps.Update(currentStep);
-
-                var nextStep = ReturnNextStep(dto.ApplicationId, currentStep.Order);
-                nextStep.ActiveStep = true;
-
-                _repo.Save();
 
                 return Ok();
             }

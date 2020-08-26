@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace alumaApi.Models
+namespace alumaApi.Dto
 {
-    [Table("risk_profile")]
-    public class RiskProfileModel : BaseModel
+    public class RiskProfileDto
     {
-        public Guid Id { get; set; }
-        public Guid StepId { get; set; }
         public Guid ApplicationId { get; set; }
         public string Client { get; set; }
         public string IdentityNumber { get; set; }
@@ -21,6 +17,11 @@ namespace alumaApi.Models
         public string RequiredRisk { get; set; }
         public string RiskTolerance { get; set; }
         public string RiskCapacity { get; set; }
+        public string Conservative { get; set; }
+        public string ModeratelyConservative { get; set; }
+        public string Moderate { get; set; }
+        public string ModeratelyAggressive { get; set; }
+        public string Aggressive { get; set; }
         public string DerivedProfile { get; set; }
         public bool AgreeWithOutcome { get; set; }
         public string Reason { get; set; }

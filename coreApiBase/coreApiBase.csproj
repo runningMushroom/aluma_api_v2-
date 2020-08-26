@@ -14,7 +14,6 @@
   <ItemGroup>
     <Content Include="Controllers\ApplicationController.cs" />
     <Content Include="Controllers\AuthenticationController.cs" />
-    <Content Include="Controllers\ScheduleController.cs" />
     <Content Include="Controllers\UserController.cs" />
   </ItemGroup>
 

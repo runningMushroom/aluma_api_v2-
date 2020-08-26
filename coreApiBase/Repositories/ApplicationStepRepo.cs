@@ -62,10 +62,10 @@ namespace alumaApi.Repositories
                     scheduleType == "company" ? ScheduleTypesEnum.Company.ToString() : "Undefined Type"
             });
 
-            // 5:  Record of advice
+            // 5:  Risk Profile
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.RecordOfAdvice,
+                StepType = ApplicationStepTypesEnum.RiskProfile,
                 ActiveStep = false,
                 ApplicationId = applicationId,
                 Order = 5,
@@ -74,7 +74,7 @@ namespace alumaApi.Repositories
             // 6:  Record of advice
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.RiskProfile,
+                StepType = ApplicationStepTypesEnum.RecordOfAdvice,
                 ActiveStep = false,
                 ApplicationId = applicationId,
                 Order = 6,
