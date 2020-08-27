@@ -11,7 +11,7 @@ namespace alumaApi.Models
     {
         public Guid Id { get; set; }
         public Guid RecordOfAdviseId { get; set; }
-        public RecordOfAdviseItemsModel RecordOfAdvise { get; set; }
+        public RecordOfAdviseModel RecordOfAdvise { get; set; }
         public string ProductName { get; set; }
         public double RecommendedLumpSum { get; set; }
         public double AcceptedLumpSum { get; set; }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -26,5 +28,17 @@ namespace alumaApi.Models
         public string Replacement_C { get; set; }
         public string Replacement_E { get; set; }
         public string ReplacementReason { get; set; }
+    }
+
+    public class RecordOfAdviseModelBuilder : IEntityTypeConfiguration<RecordOfAdviseModel>
+    {
+        public void Configure(EntityTypeBuilder<RecordOfAdviseModel> mb)
+        {
+            mb.HasMany(c => c.SelectedProducts)
+                .WithOne(c => c.RecordOfAdvise)
+                .HasForeignKey(c => c.RecordOfAdvise)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

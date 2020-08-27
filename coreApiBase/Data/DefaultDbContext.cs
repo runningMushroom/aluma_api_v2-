@@ -32,6 +32,8 @@ namespace alumaApi.Data
         public DbSet<ApplicationStepModel> ApplicationSteps { get; set; }
         public DbSet<BankVerificationsModel> BankVerifications { get; set; }
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
+        public DbSet<RecordOfAdviseModel> RecordOfAdvise { get; set; }
+        public DbSet<RecordOfAdviseItemsModel> RecordOfAdviseItems { get; set; }
         public DbSet<OtpModel> Otp { get; set; }
         public DbSet<UserModel> Users { get; set; }
 
