@@ -151,10 +151,42 @@ namespace alumaApi.Controllers
         {
             if (dto.CurrentStep.ToLower() == "complete")
             {
-                // get the applicaiton id & pass it to change application step
-                ChangeApplicationStep(_repo.ApplicationSteps
+                // get the application step containing this factory id
+                var currentStep = _repo.ApplicationSteps
                     .FindByCondition(c => c.FactoryId == dto.FactoryId)
-                    .First().ApplicationId);
+                    .First();
+
+                // get the application & user data
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == currentStep.ApplicationId)
+                    .Include(c => c.User)
+                    .First();
+
+                // get kyc meta data data
+                var metDataDto = _repo.KycFactory.GetKycMetaData(new FactoryDetailsDto()
+                {
+                    idNumber = application.User.IdNumber,
+                    factoryId = currentStep.FactoryId
+                });
+
+                // map dto data to model & create data entry
+                var kycData = _mapper.Map<KycMetaDataModel>(dto);
+                _repo.KycMetaData.Create(kycData);
+
+                // advance to the next step
+                currentStep.DataId = kycData.Id;
+                currentStep.Complete = true;
+                currentStep.ActiveStep = false;
+                _repo.ApplicationSteps.Update(currentStep);
+
+                // set next step as active
+                var nextStep = _repo.ApplicationSteps
+                    .ReturnNextStep(application.Id, currentStep.Order);
+
+                nextStep.ActiveStep = true;
+                _repo.ApplicationSteps.Update(nextStep);
+
+                _repo.Save();
             }
             else
             {

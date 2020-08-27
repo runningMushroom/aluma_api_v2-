@@ -119,27 +119,25 @@ namespace alumaApi.Controllers
                     .First();
 
                 // do request to kyc to start KYC
-                //var kycResponse = _repo.KycFactory.InitiateKycFactory(new KycInitiationDto()
-                //{
-                //    Consumers = new List<ConsumerDto>()
-                //    {
-                //        new ConsumerDto()
-                //        {
-                //            LastName = user.LastName,
-                //            FirstName = user.FirstName,
-                //            IdNumber = user.IdNumber,
-                //            Email = user.Email,
-                //            MobileNumber = user.MobileNumber,
-                //            SendEmail = true,
-                //            IsCurrent = false
-                //        }
-                //    }
-                //});
+                var kycResponse = _repo.KycFactory.InitiateKycFactory(new KycInitiationDto()
+                {
+                    Consumers = new List<ConsumerDto>()
+                    {
+                        new ConsumerDto()
+                        {
+                            LastName = user.LastName,
+                            FirstName = user.FirstName,
+                            IdNumber = user.IdNumber,
+                            Email = user.Email,
+                            MobileNumber = user.MobileNumber,
+                            SendEmail = true,
+                            IsCurrent = false
+                        }
+                    }
+                });
 
                 // save the factoryId
-
-                //digitalKycStep.FactoryId = kycResponse.FactoryId;
-                digitalKycStep.FactoryId = 1714;
+                digitalKycStep.FactoryId = kycResponse.FactoryId;
                 _repo.ApplicationSteps.Update(digitalKycStep);
                 _repo.Save();
 
@@ -156,6 +154,63 @@ namespace alumaApi.Controllers
             catch (DbUpdateException e)
             {
                 return StatusCode(501, e.Message);
+            }
+            catch (HttpRequestException e)
+            {
+                return StatusCode(503, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("get/kyc/meta/data/{stepId}")]
+        public IActionResult GetKycMetaData(Guid stepId)
+        {
+            try
+            {
+                var currentStep = _repo.ApplicationSteps
+                    .FindByCondition(c => c.Id == stepId)
+                    .First();
+
+                // get the users id number & the Kyc Factory ID
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == currentStep.ApplicationId)
+                    .Include(c => c.User)
+                    .Include(c => c.Steps)
+                    .First();
+
+                // get kyc meta data data
+                var dto = _repo.KycFactory.GetKycMetaData(new FactoryDetailsDto()
+                {
+                    idNumber = application.User.IdNumber,
+                    factoryId = application.Steps
+                        .First(c => c.StepType == ApplicationStepTypesEnum.DigitalKyc)
+                        .FactoryId
+                });
+
+                // map dto data to model & create data entry
+                var kycData = _mapper.Map<KycMetaDataModel>(dto);
+                kycData.ApplicationId = application.Id;
+                _repo.KycMetaData.Create(kycData);
+
+                // advance to the next step
+                currentStep.DataId = kycData.Id;
+                currentStep.Complete = true;
+                currentStep.ActiveStep = false;
+                _repo.ApplicationSteps.Update(currentStep);
+
+                // set next step as active
+                var nextStep = _repo.ApplicationSteps
+                    .ReturnNextStep(currentStep.ApplicationId, currentStep.Order);
+
+                nextStep.ActiveStep = true;
+                _repo.ApplicationSteps.Update(nextStep);
+
+                _repo.Save();
+
+                return StatusCode(201);
             }
             catch (HttpRequestException e)
             {

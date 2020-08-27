@@ -13,7 +13,7 @@ namespace KycFactory
     {
         KycInitiationResponseDto InitiateKycFactory(KycInitiationDto dto);
 
-        bool testException();
+        RealTimeResultsDto GetKycMetaData(FactoryDetailsDto dto);
     }
 
     public class KycFactoryRepo : IKycFactoryRepo
@@ -50,9 +50,22 @@ namespace KycFactory
             return JsonConvert.DeserializeObject<KycInitiationResponseDto>(response.Content);
         }
 
-        public bool testException()
+        public RealTimeResultsDto GetKycMetaData(FactoryDetailsDto dto)
         {
-            throw new HttpRequestException("KycFactory could not be started");
+            var client = new RestClient($"{_settings.BaseUrl}Consumer/get-compliance-report-metadata");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
+            request.AddParameter("application/json", JsonConvert.SerializeObject(dto), ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to retreive KYC Meta Data");
+
+            MetaDataDto metaDatadto = JsonConvert.DeserializeObject<MetaDataDto>(response.Content);
+
+            return metaDatadto.IdVerify.RealTimeResults;
         }
     }
 }

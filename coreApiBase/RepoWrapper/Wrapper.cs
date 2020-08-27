@@ -23,6 +23,7 @@ namespace alumaApi.RepoWrapper
         private IBankVerificationRepo _bankVerification;
         private IDividendTaxRepo _dividendTax;
         private IFspMandateRepo _fspMandate;
+        private IKycMetaDataRepo _kycMetaData;
         private IOtpRepo _otp;
         private IRecordOfAdviseRepo _recordOfAdvise;
         private IRequiredSecondarySchedulesRepo _requiredSecondarySchedules;
@@ -82,6 +83,11 @@ namespace alumaApi.RepoWrapper
         public IFspMandateRepo FspMandate
         {
             get { return _fspMandate == null ? new FspMandateRepo(_dbContext) : _fspMandate; }
+        }
+
+        public IKycMetaDataRepo KycMetaData
+        {
+            get { return _kycMetaData == null ? new KycMetaDataRepo(_dbContext) : _kycMetaData; }
         }
 
         public IOtpRepo Otp

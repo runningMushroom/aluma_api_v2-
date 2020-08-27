@@ -35,6 +35,7 @@ namespace alumaApi.Data
         public DbSet<BankVerificationsModel> BankVerifications { get; set; }
         public DbSet<DividendTaxModel> Dividends { get; set; }
         public DbSet<FspMandateModel> FspMandatates { get; set; }
+        public DbSet<KycMetaDataModel> KycMetaData { get; set; }
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
         public DbSet<RecordOfAdviseModel> RecordOfAdvise { get; set; }
         public DbSet<RecordOfAdviseItemsModel> RecordOfAdviseItems { get; set; }

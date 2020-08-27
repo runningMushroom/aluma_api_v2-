@@ -46,4 +46,34 @@ namespace KycFactory
         public string CurrentStep { get; set; }
         public string NextStep { get; set; }
     }
+
+    public class FactoryDetailsDto
+    {
+        public int factoryId { get; set; }
+        public string idNumber { get; set; }
+    }
+
+    public class MetaDataDto
+    {
+        public IdVerifyDto IdVerify { get; set; }
+    }
+
+    public class IdVerifyDto
+    {
+        public RealTimeResultsDto RealTimeResults { get; set; }
+    }
+
+    public class RealTimeResultsDto
+    {
+        public string IdNumber { get; set; }
+        public string FirstNames { get; set; }
+        public string SurName { get; set; }
+        public string Dob { get; set; }
+        public string Age { get; set; }
+        public string Gender { get; set; }
+        public string Citizenship { get; set; }
+        public string DeceasedStatus { get; set; }
+        public string CellNumber { get; set; }
+        public string Email { get; set; }
+    }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200827205944_31")]
+    partial class _31
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -458,59 +460,6 @@ namespace alumaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("fsp_mandate");
-                });
-
-            modelBuilder.Entity("alumaApi.Models.KycMetaDataModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Age")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CellNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Citizenship")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeceasedStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Dob")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstNames")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SurName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId")
-                        .IsUnique();
-
-                    b.ToTable("kyc_meta_data");
                 });
 
             modelBuilder.Entity("alumaApi.Models.OtpModel", b =>
@@ -1236,7 +1185,7 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("24c7edf4-e28f-47e0-8c47-050e006b888e"),
+                            Id = new Guid("10e6a1c4-94f6-4506-9718-54ee9bc94947"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
@@ -1245,7 +1194,7 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9502.lPXPL4whA8Tx2v8Y8kEF3A==.Q+FYWGwANewo7/oaTSZpkiFMd4DK0wJLGxQ5900O5oU=",
+                            Password = "9082.ma0hbylNHdGv8N3wNPwLXQ==.upgPxP6Q2UuXX/imrl5eN/3n0lw0k9XOfChtn9/GkjE=",
                             Role = "Admin"
                         });
                 });
@@ -1282,15 +1231,6 @@ namespace alumaApi.Migrations
                     b.HasOne("alumaApi.Models.UserModel", "User")
                         .WithMany("Applications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("alumaApi.Models.KycMetaDataModel", b =>
-                {
-                    b.HasOne("alumaApi.Models.ApplicationsModel", "Application")
-                        .WithOne("KycMetaData")
-                        .HasForeignKey("alumaApi.Models.KycMetaDataModel", "ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

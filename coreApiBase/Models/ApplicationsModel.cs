@@ -17,6 +17,7 @@ namespace alumaApi.Models
         public UserModel User { get; set; }
         public ICollection<ApplicationStepModel> Steps { get; set; }
         public ICollection<ApplicationDocumentsModel> Documents { get; set; }
+        public KycMetaDataModel KycMetaData { get; set; }
         public bool Signed { get; set; }
         public string Description { get; set; }
         public string BdaNumber { get; set; }
@@ -40,6 +41,12 @@ namespace alumaApi.Models
             mb.HasMany(c => c.Documents)
                 .WithOne(c => c.Application)
                 .HasForeignKey(c => c.ApplicationId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasOne(c => c.KycMetaData)
+                .WithOne(c => c.Application)
+                .HasForeignKey<KycMetaDataModel>(c => c.ApplicationId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

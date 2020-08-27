@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace alumaApi.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize]
+    [ApiController, Route("api/v1/required/secondary/schedules"), Authorize]
     public class RequiredSecondarySchedulesController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -23,6 +23,37 @@ namespace alumaApi.Controllers
         {
             _repo = repo;
             _mapper = mapper;
+        }
+
+        [HttpPost("{applicationId}")]
+        public IActionResult NotRequired(Guid applicationId)
+        {
+            try
+            {
+                var thisStep = _repo.ApplicationSteps
+                        .FindByCondition(
+                            c => c.ApplicationId == applicationId &&
+                            c.StepType == ApplicationStepTypesEnum.SecondarySchedule)
+                        .First();
+
+                thisStep.Complete = true;
+                thisStep.ActiveStep = false;
+                _repo.ApplicationSteps.Update(thisStep);
+
+                var nextStep = _repo.ApplicationSteps
+                        .ReturnNextStep(applicationId, thisStep.Order);
+
+                nextStep.ActiveStep = true;
+                _repo.ApplicationSteps.Update(nextStep);
+
+                _repo.Save();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPut]
@@ -58,6 +89,7 @@ namespace alumaApi.Controllers
                     thisStep.DataId = requirements.Id;
                     thisStep.Complete = true;
                     thisStep.ActiveStep = false;
+                    _repo.ApplicationSteps.Update(thisStep);
 
                     var nextStep = _repo.ApplicationSteps
                         .ReturnNextStep(requirements.ApplicationId, thisStep.Order);
@@ -67,6 +99,8 @@ namespace alumaApi.Controllers
 
                     _repo.Save();
                 }
+
+                // send out a email and sms for each person who haven't yet completed their secodnary Schedule
 
                 return Ok();
             }

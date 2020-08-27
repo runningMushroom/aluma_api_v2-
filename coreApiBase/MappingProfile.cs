@@ -8,6 +8,7 @@ using alumaApi.Dto.Schedules;
 using alumaApi.Models.Schedules.PrimaryIndividual;
 using alumaApi.Dto.Schedules.PrimaryIndividual;
 using alumaApi.Repositories;
+using KycFactory;
 
 namespace alumaApi
 {
@@ -48,6 +49,10 @@ namespace alumaApi
 
             // Dividend tax
             CreateMap<DividendTaxModel, DividendTaxDto>()
+                .ReverseMap();
+
+            // KYC Meta Data
+            CreateMap<KycMetaDataModel, RealTimeResultsDto>()
                 .ReverseMap();
 
             // FSP Mandate
