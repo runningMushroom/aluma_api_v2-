@@ -10,7 +10,7 @@ namespace alumaApi.Models
     public class FspMandateModel : BaseModel
     {
         public Guid Id { get; set; }
-        public Guid stepId { get; set; }
+        public Guid StepId { get; set; }
         public Guid ApplicationId { get; set; }
         public string ClientDetails { get; set; }
         public string Products { get; set; }

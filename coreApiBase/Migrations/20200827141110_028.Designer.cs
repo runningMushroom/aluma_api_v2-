@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200827141110_028")]
+    partial class _028
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -455,7 +457,7 @@ namespace alumaApi.Migrations
                     b.Property<string>("StartDate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StepId")
+                    b.Property<Guid>("stepId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -1120,7 +1122,7 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("96c7c9e2-6a5d-4566-9f00-df2a0f1b5a29"),
+                            Id = new Guid("db8155bc-9cd8-4e0b-941a-b828209de83a"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
@@ -1129,7 +1131,7 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9174.wR/hB/n098uMjBvpLDEsHw==.MBPMAyXunGLzuiiRov2VOfBRkjoSu3R9x9StSy6VsjU=",
+                            Password = "9229.NUuWalzvDY2g9f+k5iRpkw==.VPsvnW68DR/CSMILnB5sTxmFLOyvKqBJ9s6tu2WkR+Y=",
                             Role = "Admin"
                         });
                 });
