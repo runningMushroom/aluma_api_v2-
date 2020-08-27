@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace alumaApi.Models
 {
-    public class DividendTaxModel
+    [Table("dividend_tax")]
+    public class DividendTaxModel : BaseModel
     {
         public Guid Id { get; set; }
         public Guid StepId { get; set; }

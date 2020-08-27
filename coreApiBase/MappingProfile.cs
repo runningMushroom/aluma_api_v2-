@@ -46,8 +46,12 @@ namespace alumaApi
             CreateMap<BankVerificationsModel, BankVerificationsDto>()
                 .ReverseMap();
 
-            // Dividend tax form
+            // Dividend tax
             CreateMap<DividendTaxModel, DividendTaxDto>()
+                .ReverseMap();
+
+            // FSP Mandate
+            CreateMap<FspMandateModel, FspMandateDto>()
                 .ReverseMap();
 
             // Record of Advise
