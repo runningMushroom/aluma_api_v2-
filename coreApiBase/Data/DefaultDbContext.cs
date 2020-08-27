@@ -17,6 +17,8 @@ namespace alumaApi.Data
             mb.ApplyConfiguration(new UserModelBuilder());
             mb.ApplyConfiguration(new ApplicationModelBuilder());
             mb.ApplyConfiguration(new AdvisorAdviseModelBuilder());
+            mb.ApplyConfiguration(new RecordOfAdviseModelBuilder());
+            mb.ApplyConfiguration(new RequiredSecondarySchedulesModelBuilder());
 
             // Primary Individual
             mb.ApplyConfiguration(new PrimaryIndividualModelBuilder());
@@ -36,6 +38,8 @@ namespace alumaApi.Data
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
         public DbSet<RecordOfAdviseModel> RecordOfAdvise { get; set; }
         public DbSet<RecordOfAdviseItemsModel> RecordOfAdviseItems { get; set; }
+        public DbSet<RequiredSecondarySchedulesContactsModel> RequiredSecondarySchedulesContacts { get; set; }
+        public DbSet<RequiredSecondarySchedulesModel> RequiredSecondarySchedules { get; set; }
         public DbSet<OtpModel> Otp { get; set; }
         public DbSet<UserModel> Users { get; set; }
 

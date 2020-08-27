@@ -25,6 +25,7 @@ namespace alumaApi.RepoWrapper
         private IFspMandateRepo _fspMandate;
         private IOtpRepo _otp;
         private IRecordOfAdviseRepo _recordOfAdvise;
+        private IRequiredSecondarySchedulesRepo _requiredSecondarySchedules;
         private IRiskProfileRepo _riskProfile;
         private IUserRepo _user;
 
@@ -91,6 +92,11 @@ namespace alumaApi.RepoWrapper
         public IRecordOfAdviseRepo RecordOfAdvise
         {
             get { return _recordOfAdvise == null ? new RecordOfAdviseRepo(_dbContext) : _recordOfAdvise; }
+        }
+
+        public IRequiredSecondarySchedulesRepo RequiredSecondarySchedules
+        {
+            get { return _requiredSecondarySchedules == null ? new RequiredSecondarySchedulesRepo(_dbContext) : _requiredSecondarySchedules; }
         }
 
         public IRiskProfileRepo RiskProfile

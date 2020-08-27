@@ -36,7 +36,7 @@ namespace alumaApi.Models
         {
             mb.HasMany(c => c.SelectedProducts)
                 .WithOne(c => c.RecordOfAdvise)
-                .HasForeignKey(c => c.RecordOfAdvise)
+                .HasForeignKey(c => c.RecordOfAdviseId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

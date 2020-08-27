@@ -61,6 +61,13 @@ namespace alumaApi
             CreateMap<RecordOfAdviseItemsModel, RecordOfAdviseItemsDto>()
                 .ReverseMap();
 
+            // Required Secondary Schedules
+            CreateMap<RequiredSecondarySchedulesModel, RequiredSecondarySchedulesDto>()
+                .ReverseMap();
+
+            CreateMap<RequiredSecondarySchedulesContactsModel, RequiredSecondarySchedulesContactsDto>()
+                .ReverseMap();
+
             // Risk Profile
             CreateMap<RiskProfileModel, RiskProfileDto>()
                 .ReverseMap();

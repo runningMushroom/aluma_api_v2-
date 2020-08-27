@@ -21,6 +21,7 @@ namespace alumaApi.RepoWrapper
         IFspMandateRepo FspMandate { get; }
         IOtpRepo Otp { get; }
         IRecordOfAdviseRepo RecordOfAdvise { get; }
+        IRequiredSecondarySchedulesRepo RequiredSecondarySchedules { get; }
         IRiskProfileRepo RiskProfile { get; }
         IUserRepo User { get; }
 
