@@ -85,19 +85,19 @@ namespace alumaApi.Repositories
                 Order = 6,
             });
 
-            // 7:  FSP Mandate
+            // 7:  Dividend
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.FspMandate,
+                StepType = ApplicationStepTypesEnum.Dividens,
                 ActiveStep = false,
                 ApplicationId = applicationId,
                 Order = 7,
             });
 
-            // 8:  Dividend
+            // 8:  FSP Mandate
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.Dividens,
+                StepType = ApplicationStepTypesEnum.FspMandate,
                 ActiveStep = false,
                 ApplicationId = applicationId,
                 Order = 8,

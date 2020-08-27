@@ -17,6 +17,8 @@ namespace alumaApi.RepoWrapper
         IApplicationRepo Applications { get; }
         IApplicationStepRepo ApplicationSteps { get; }
         IBankVerificationRepo BankVerification { get; }
+        IDividendTaxRepo DividendTax { get; }
+        IFspMandateRepo FspMandate { get; }
         IOtpRepo Otp { get; }
         IRecordOfAdviseRepo RecordOfAdvise { get; }
         IRiskProfileRepo RiskProfile { get; }

@@ -7,6 +7,7 @@ using alumaApi.Models.Schedules;
 using alumaApi.Dto.Schedules;
 using alumaApi.Models.Schedules.PrimaryIndividual;
 using alumaApi.Dto.Schedules.PrimaryIndividual;
+using alumaApi.Repositories;
 
 namespace alumaApi
 {
@@ -34,15 +35,19 @@ namespace alumaApi
                 .ForMember(d => d.StepType, opt => opt.ConvertUsing(new ApplStepTypeEnumToString()))
                 .ReverseMap();
 
-            // Bank Details
-            CreateMap<BankVerificationsModel, BankVerificationsDto>()
-                .ReverseMap();
-
             // Applications
             CreateMap<ApplicationsModel, ApplicationDto>()
                 .ForMember(
                     dest => dest.Steps,
                     opt => opt.MapFrom(src => src.Steps))
+                .ReverseMap();
+
+            // Bank Details
+            CreateMap<BankVerificationsModel, BankVerificationsDto>()
+                .ReverseMap();
+
+            // Dividend tax form
+            CreateMap<DividendTaxModel, DividendTaxDto>()
                 .ReverseMap();
 
             // Record of Advise

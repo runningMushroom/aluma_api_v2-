@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200827110601_024")]
+    partial class _024
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,98 +276,6 @@ namespace alumaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("bank_verification");
-                });
-
-            modelBuilder.Entity("alumaApi.Models.DividendTaxModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AccountReference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateOfBirth")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_4")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_5")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_6")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_7")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Exemption_8")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Home")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdNoPassport")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InitialsFirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Mobile")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameSurname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NatureOfEntity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Postal")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("StepId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TaxNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TitleSurname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TradingName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Work")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Dividends");
                 });
 
             modelBuilder.Entity("alumaApi.Models.FspMandateModel", b =>
@@ -1183,7 +1093,7 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("713762b3-b687-470b-ba8b-98f8558debb6"),
+                            Id = new Guid("0936f253-aedf-4fbd-b2df-3d7def0e79c8"),
                             Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
@@ -1192,7 +1102,7 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9645.+uCcmyxLqzixtFoKU+NH2Q==.YU75XgAjCJl39RNGRg84uYIPH3eIoLVk8Byvl573+dM=",
+                            Password = "9490.MYckDdjdo6xBB//Xv1sHng==.m7q5jXEqEjdXPCfTU50XRrXqNO8sj0V8I3BtHqlb65I=",
                             Role = "Admin"
                         });
                 });

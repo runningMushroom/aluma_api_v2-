@@ -21,9 +21,11 @@ namespace alumaApi.RepoWrapper
         private IApplicationRepo _application;
         private IApplicationStepRepo _applicationStep;
         private IBankVerificationRepo _bankVerification;
+        private IDividendTaxRepo _dividendTax;
+        private IFspMandateRepo _fspMandate;
+        private IOtpRepo _otp;
         private IRecordOfAdviseRepo _recordOfAdvise;
         private IRiskProfileRepo _riskProfile;
-        private IOtpRepo _otp;
         private IUserRepo _user;
 
         // Schedules
@@ -69,6 +71,16 @@ namespace alumaApi.RepoWrapper
         public IBankVerificationRepo BankVerification
         {
             get { return _bankVerification == null ? new BankVerificationRepo(_dbContext) : _bankVerification; }
+        }
+
+        public IDividendTaxRepo DividendTax
+        {
+            get { return _dividendTax == null ? new DividendTaxRepo(_dbContext) : _dividendTax; }
+        }
+
+        public IFspMandateRepo FspMandate
+        {
+            get { return _fspMandate == null ? new FspMandateRepo(_dbContext) : _fspMandate; }
         }
 
         public IOtpRepo Otp
