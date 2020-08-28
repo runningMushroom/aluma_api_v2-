@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace alumaApi.Controllers
 {
@@ -74,7 +75,7 @@ namespace alumaApi.Controllers
                     .ToList();
 
                 // map applications to dto & return list
-                return Ok(_mapper.Map<List<ApplicationDto>>(applList));
+                return Ok(_mapper.Map<List<ApplicationsDto>>(applList));
             }
             catch (Exception e)
             {
@@ -96,9 +97,13 @@ namespace alumaApi.Controllers
                 // do not proceed if step is null
                 if (step == null) return StatusCode(404, "Step item for given application id not found");
 
+                // get advisor details
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
                 // map advise & apped stepId
                 var advise = _mapper.Map<AdvisorAdviseModel>(dto);
                 advise.StepId = step.Id;
+                advise.UserId = claims.UserId;
 
                 // add advise object to db
                 _repo.AdvisorAdvise.Create(advise);

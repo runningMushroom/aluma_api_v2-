@@ -20,6 +20,6 @@ namespace alumaApi.Enum
         Irsw8bene,
         Irsw9,
         LossOfNationality,
-        Signature,
+        ProcessApplication,
     }
 }

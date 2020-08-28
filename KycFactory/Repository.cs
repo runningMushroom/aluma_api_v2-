@@ -14,6 +14,8 @@ namespace KycFactory
         KycInitiationResponseDto InitiateKycFactory(KycInitiationDto dto);
 
         RealTimeResultsDto GetKycMetaData(FactoryDetailsDto dto);
+
+        string GetComplianceReport(FactoryDetailsDto dto);
     }
 
     public class KycFactoryRepo : IKycFactoryRepo
@@ -66,6 +68,24 @@ namespace KycFactory
             MetaDataDto metaDatadto = JsonConvert.DeserializeObject<MetaDataDto>(response.Content);
 
             return metaDatadto.IdVerify.RealTimeResults;
+        }
+
+        public string GetComplianceReport(FactoryDetailsDto dto)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}Consumer/get-compliance-report");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
+            request.AddParameter("application/json", JsonConvert.SerializeObject(dto), ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Couldn't retreive compliance report");
+
+            var responseData = JsonConvert.DeserializeObject<ComplianceReportDto>(response.Content);
+
+            return responseData.Document;
         }
     }
 }

@@ -74,7 +74,7 @@ namespace alumaApi.Controllers
                     .ToList();
 
                 // map applications to dto & return list
-                return Ok(_mapper.Map<List<ApplicationDto>>(applList));
+                return Ok(_mapper.Map<List<ApplicationsDto>>(applList));
             }
             catch (Exception e)
             {

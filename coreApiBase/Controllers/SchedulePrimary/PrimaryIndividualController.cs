@@ -186,7 +186,7 @@ namespace alumaApi.Controllers.SchedulePrimary
             return _repo.ApplicationSteps
                 .FindByCondition(
                     c => c.ApplicationId == applicationId &&
-                    c.StepType == ApplicationStepTypesEnum.Signature)
+                    c.StepType == ApplicationStepTypesEnum.ProcessApplication)
                 .First();
         }
     }

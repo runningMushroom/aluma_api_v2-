@@ -115,7 +115,7 @@ namespace alumaApi.Repositories
             // 10:  Sign
             stepList.Add(new ApplicationStepModel()
             {
-                StepType = ApplicationStepTypesEnum.Signature,
+                StepType = ApplicationStepTypesEnum.ProcessApplication,
                 ActiveStep = false,
                 ApplicationId = applicationId,
                 Order = 10,

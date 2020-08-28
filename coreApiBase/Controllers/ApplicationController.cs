@@ -57,7 +57,7 @@ namespace alumaApi.Controllers
 
                 _repo.Save();
 
-                var dto = _mapper.Map<ApplicationDto>(application);
+                var dto = _mapper.Map<ApplicationsDto>(application);
 
                 return Ok(dto);
             }
@@ -79,7 +79,7 @@ namespace alumaApi.Controllers
                     .Include(c => c.Steps)
                     .ToList();
 
-                return Ok(_mapper.Map<List<ApplicationDto>>(applList));
+                return Ok(_mapper.Map<List<ApplicationsDto>>(applList));
             }
             catch (Exception e)
             {
@@ -101,7 +101,7 @@ namespace alumaApi.Controllers
                 if (!application.Any())
                     return StatusCode(404, "Application not found");
 
-                return Ok(_mapper.Map<ApplicationDto>(application.First()));
+                return Ok(_mapper.Map<ApplicationsDto>(application.First()));
             }
             catch (Exception e)
             {

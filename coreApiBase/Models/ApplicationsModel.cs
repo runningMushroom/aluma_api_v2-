@@ -21,10 +21,12 @@ namespace alumaApi.Models
         public bool Signed { get; set; }
         public string Description { get; set; }
         public string BdaNumber { get; set; }
+        public bool PaymentConfirmed { get; set; }
 
         public ApplicationsModel()
         {
             Signed = false;
+            PaymentConfirmed = false;
         }
     }
 

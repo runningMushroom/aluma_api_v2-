@@ -76,4 +76,11 @@ namespace KycFactory
         public string CellNumber { get; set; }
         public string Email { get; set; }
     }
+
+    public class ComplianceReportDto
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public string Document { get; set; }
+    }
 }

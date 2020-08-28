@@ -38,7 +38,7 @@ namespace alumaApi
                 .ReverseMap();
 
             // Applications
-            CreateMap<ApplicationsModel, ApplicationDto>()
+            CreateMap<ApplicationsModel, ApplicationsDto>()
                 .ForMember(
                     dest => dest.Steps,
                     opt => opt.MapFrom(src => src.Steps))

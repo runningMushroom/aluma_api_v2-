@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace alumaApi.Dto
 {
-    public class ApplicationDto
+    public class ApplicationsDto
     {
         public Guid Id { get; set; }
 
@@ -16,5 +16,7 @@ namespace alumaApi.Dto
         public string Description { get; set; }
 
         public List<ApplicationStepsDto> Steps { get; set; }
+        public string BdaNumber { get; set; }
+        public bool PaymentConfirmed { get; set; }
     }
 }
