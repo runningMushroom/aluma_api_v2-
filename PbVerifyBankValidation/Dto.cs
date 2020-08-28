@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace PbVerifyBankValidation
 {
@@ -30,25 +31,53 @@ namespace PbVerifyBankValidation
 
     public class BankVerificationsDto
     {
-        public string Name { get; set; }
-        public string SearchData { get; set; }
+        [JsonProperty("CLIENTUSERREFERENCE")]
         public string Reference { get; set; }
-        public string BankName { get; set; }
+
+        [JsonProperty("ACCOUNTTYPE")]
         public string AccountType { get; set; }
+
         public string VerificationType { get; set; }
+
+        [JsonProperty("BRANCHNUMBER")]
         public string BranchCode { get; set; }
+
+        [JsonProperty("ACCOUNTNUMBER")]
         public string AccountNumber { get; set; }
-        public string AccountId { get; set; }
+
+        [JsonProperty("IDNUMBER")]
         public string IdNumber { get; set; }
+
+        [JsonProperty("INITIALS")]
         public string Initials { get; set; }
+
+        [JsonProperty("SURNAME")]
         public string Surname { get; set; }
+
+        [JsonProperty("ACCOUNTFOUND")]
         public string FoundAtBank { get; set; }
+
+        [JsonProperty("ACCOUNT-OPEN")]
         public string AccOpen { get; set; }
+
+        [JsonProperty("ACCOUNTOPENFORATLEASTTHREEMONTHS")]
         public string OlderThan3Months { get; set; }
+
+        [JsonProperty("ACCOUNTTYPERETURN")]
         public string TypeCorrect { get; set; }
+
+        [JsonProperty("IDNUMBERMATCH")]
         public string IdNumberMatch { get; set; }
+
+        [JsonProperty("INITIALSMATCH")]
         public string NamesMatch { get; set; }
+
+        [JsonProperty("ACCOUNTACCEPTSDEBITS")]
         public string AcceptDebits { get; set; }
+
+        [JsonProperty("ACCOUNTACCEPTSCREDITS")]
         public string AcceptCredits { get; set; }
+
+        public string BankName { get; set; }
     }
 }

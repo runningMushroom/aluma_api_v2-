@@ -59,6 +59,7 @@ namespace alumaApi.Controllers
                     currentStep.DataId = roa.Id;
                     currentStep.ActiveStep = false;
                     currentStep.Complete = true;
+                    _repo.ApplicationSteps.Update(currentStep);
 
                     // get next step and mark it as active
                     var nextStep = _repo.ApplicationSteps

@@ -1,4 +1,5 @@
 ﻿using alumaApi.Data;
+using alumaApi.Enum;
 using alumaApi.Models;
 using Hangfire;
 using PbVerifyBankValidation;
@@ -33,15 +34,11 @@ namespace alumaApi.Repositories
             if (bavStatus.Status.ToLower() == "success")
             {
                 var result = bavStatus.Results;
-                bav.Name = result.Name;
-                bav.SearchData = result.SearchData;
                 bav.Reference = result.Reference;
-                bav.BankName = result.BankName;
-                bav.AccountType = result.AccountType;
-                bav.VerificationType = result.VerificationType;
+                //bav.AccountType = result.AccountType;
+                //bav.VerificationType = result.VerificationType;
                 bav.BranchCode = result.BranchCode;
                 bav.AccountNumber = result.AccountNumber;
-                bav.AccountId = result.AccountId;
                 bav.IdNumber = result.IdNumber;
                 bav.Initials = result.Initials;
                 bav.Surname = result.Surname;
@@ -57,25 +54,15 @@ namespace alumaApi.Repositories
                 _context.BankVerifications.Update(bav);
 
                 // alse set the step entry as completed
-                var step = _context.ApplicationSteps.Find(bav.StepId);
+                var step = _context.ApplicationSteps
+                    .First(c => c.ApplicationId == bav.ApplicationId && c.StepType == ApplicationStepTypesEnum.BankValidation);
                 step.Complete = true;
 
                 _context.ApplicationSteps.Update(step);
                 _context.SaveChanges();
             }
             else
-            {
-                bav.ChecksCount += 1;
-                // reque this job to check again in 15 minutes
-                RequeStatusCheck(jobId, bav.ChecksCount);
-            }
-        }
-
-        private void RequeStatusCheck(string jobId, int checksCount)
-        {
-            var interval = checksCount > 4 ? 60 : 15;
-            // check again in the next interval period
-            BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(jobId), TimeSpan.FromMinutes(interval));
+                throw new Exception("Bank Validation Failed");
         }
     }
 }

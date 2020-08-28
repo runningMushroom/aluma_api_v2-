@@ -18,6 +18,7 @@ namespace alumaApi.Models
         public ICollection<ApplicationStepModel> Steps { get; set; }
         public ICollection<ApplicationDocumentsModel> Documents { get; set; }
         public KycMetaDataModel KycMetaData { get; set; }
+        public bool SigningRightsGiven { get; set; }
         public bool Signed { get; set; }
         public string Description { get; set; }
         public string BdaNumber { get; set; }

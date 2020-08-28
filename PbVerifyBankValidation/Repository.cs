@@ -63,16 +63,16 @@ namespace PbVerifyBankValidation
 
         public VerificationStatusResponse GetBankValidationStatus(string jobId)
         {
-            var client = new RestClient($"{_settings.BaseUrl}pbv-bank-account-verification");
+            var client = new RestClient($"{_settings.BaseUrl}pbv-bank-account-verification-job-status");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
+            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             request.AddHeader("Content-Type", "multipart/form-data");
             request.AlwaysMultipartFormData = true;
-            request.AddParameter("memberkey", _settings.Memberkey);
-            request.AddParameter("password", _settings.Password);
-            request.AddParameter("jobId", jobId);
+            request.AddParameter("memberkey", _settings.Memberkey.ToString());
+            request.AddParameter("password", _settings.Password.ToString());
+            request.AddParameter("jobId", jobId.ToString());
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
