@@ -43,6 +43,7 @@
     <ProjectReference Include="..\..\..\classLibraries\dotnet3\JwtAuthentication\JwtAuthentication.csproj" />
     <ProjectReference Include="..\BulkSms\BulkSms.csproj" />
     <ProjectReference Include="..\KycFactory\KycFactory.csproj" />
+    <ProjectReference Include="..\PbVerifyBankValidation\PbVerifyBankValidation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

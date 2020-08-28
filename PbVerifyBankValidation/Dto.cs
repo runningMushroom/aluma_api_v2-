@@ -1,18 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace alumaApi.Dto
+namespace PbVerifyBankValidation
 {
+    public class SettingsDto
+    {
+        public string BaseUrl { get; set; }
+        public string Authorization { get; set; }
+        public string Memberkey { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class BankValidationResponseDto
+    {
+        public string Status { get; set; }
+        public XdsbvsDto XDSBVS { get; set; }
+    }
+
+    public class XdsbvsDto
+    {
+        public string JobStatus { get; set; }
+        public string JobID { get; set; }
+    }
+
+    public class VerificationStatusResponse
+    {
+        public string Status { get; set; }
+        public BankVerificationsDto Results { get; set; }
+    }
+
     public class BankVerificationsDto
     {
-        public Guid Id { get; set; }
-        public Guid ApplicationId { get; set; }
-        public Guid StepId { get; set; }
         public string Name { get; set; }
         public string SearchData { get; set; }
         public string Reference { get; set; }
+        public string BankName { get; set; }
+        public string AccountType { get; set; }
+        public string VerificationType { get; set; }
         public string BranchCode { get; set; }
         public string AccountNumber { get; set; }
         public string AccountId { get; set; }

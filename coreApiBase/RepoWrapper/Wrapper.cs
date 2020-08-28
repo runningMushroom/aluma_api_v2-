@@ -8,6 +8,7 @@ using BulkSms;
 using JwtAuthentication;
 using KycFactory;
 using alumaApi.Repositories.Shedules;
+using PbVerifyBankValidation;
 
 namespace alumaApi.RepoWrapper
 {
@@ -36,8 +37,9 @@ namespace alumaApi.RepoWrapper
         private IBulkSmsRepo _bulkSMs;
         private IJwtRepo _jwt;
         private IKycFactoryRepo _kyc;
-        private IStringHasher _hasher;
         private IMailSender _mailSender;
+        private IPvBerifyBankValidationRepo _pbVerifyBankValidation;
+        private IStringHasher _hasher;
         private ITokenProvider _tokenProvider;
 
         public Wrapper(DefaultDbContext dbContext)
@@ -138,14 +140,19 @@ namespace alumaApi.RepoWrapper
             get { return _kyc == null ? new KycFactoryRepo() : _kyc; }
         }
 
-        public IStringHasher StrHasher
-        {
-            get { return _hasher == null ? new StringHasherRepo() : _hasher; }
-        }
-
         public IMailSender SendMail
         {
             get { return _mailSender == null ? new MailSenderRepo() : _mailSender; }
+        }
+
+        public IPvBerifyBankValidationRepo PbVerifyBankValidation
+        {
+            get { return _pbVerifyBankValidation == null ? new PvBerifyBankValidationRepo() : _pbVerifyBankValidation; }
+        }
+
+        public IStringHasher StrHasher
+        {
+            get { return _hasher == null ? new StringHasherRepo() : _hasher; }
         }
 
         public ITokenProvider TokenProvider

@@ -9,6 +9,7 @@ using alumaApi.Models.Schedules.PrimaryIndividual;
 using alumaApi.Dto.Schedules.PrimaryIndividual;
 using alumaApi.Repositories;
 using KycFactory;
+using PbVerifyBankValidation;
 
 namespace alumaApi
 {

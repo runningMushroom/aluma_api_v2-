@@ -238,66 +238,6 @@ namespace alumaApi.Controllers
             }
         }
 
-        [HttpPut("bank/verification/{applicationId}")]
-        public IActionResult GetBankVerification(Guid applicationId)
-        {
-            try
-            {
-                //var bankDetails
-                var bankVerification = _repo.BankVerification
-                    .FindByCondition(c => c.ApplicationId == applicationId)
-                    .First();
-
-                return Ok(bankVerification);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpPut("bank/verification")]
-        public IActionResult PutBankVerification(BankVerificationsModel bankVerification)
-        {
-            try
-            {
-                // get banking step for the given bankverification
-                var step = _repo.ApplicationSteps
-                    .FindByCondition(
-                        c => c.ApplicationId == bankVerification.ApplicationId &&
-                        c.StepType == ApplicationStepTypesEnum.BankValidation)
-                    .First();
-
-                bankVerification.StepId = step.Id;
-
-                // if bank validation exists - update, else create
-                var bankVericationExists = _repo.BankVerification
-                    .FindByCondition(c => c.ApplicationId == bankVerification.ApplicationId);
-
-                if (bankVericationExists.Any())
-                {
-                    var existingBankValidation = bankVericationExists.First();
-                    existingBankValidation = bankVerification;
-                    _repo.BankVerification.Update(existingBankValidation);
-                }
-                else
-                {
-                    _repo.BankVerification.Create(bankVerification);
-
-                    // proceed to next stpe
-                    ChangeApplicationStep(bankVerification.ApplicationId);
-                }
-
-                _repo.Save();
-
-                return StatusCode(201);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
         private void ChangeApplicationStep(Guid applicationId)
         {
             // get the current step for this application
