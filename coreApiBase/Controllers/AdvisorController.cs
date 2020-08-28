@@ -104,7 +104,17 @@ namespace alumaApi.Controllers
                 _repo.AdvisorAdvise.Create(advise);
 
                 // update the application steps
-                var digitalKycStep = AdvanceStep(advise.ApplicationId, step);
+                //var digitalKycStep = AdvanceStep(advise.ApplicationId, step);
+                step.Complete = true;
+                step.ActiveStep = false;
+                step.DataId = advise.Id;
+                _repo.ApplicationSteps.Update(step);
+
+                // set next step active
+                var digitalKycStep = _repo.ApplicationSteps
+                    .ReturnNextStep(dto.ApplicationId, step.Order);
+                digitalKycStep.ActiveStep = true;
+                _repo.ApplicationSteps.Update(digitalKycStep);
 
                 // save all changes
                 _repo.Save();
@@ -112,10 +122,7 @@ namespace alumaApi.Controllers
                 // get the user that this application belongs to
                 var application = _repo.Applications
                     .FindByCondition(c => c.Id == dto.ApplicationId)
-                    .First();
-
-                var user = _repo.User
-                    .FindByCondition(c => c.Id == application.UserId)
+                    .Include(c => c.User)
                     .First();
 
                 // do request to kyc to start KYC
@@ -125,11 +132,11 @@ namespace alumaApi.Controllers
                     {
                         new ConsumerDto()
                         {
-                            LastName = user.LastName,
-                            FirstName = user.FirstName,
-                            IdNumber = user.IdNumber,
-                            Email = user.Email,
-                            MobileNumber = user.MobileNumber,
+                            LastName = application.User.LastName,
+                            FirstName = application.User.FirstName,
+                            IdNumber = application.User.IdNumber,
+                            Email = application.User.Email,
+                            MobileNumber = application.User.MobileNumber,
                             SendEmail = true,
                             IsCurrent = false
                         }

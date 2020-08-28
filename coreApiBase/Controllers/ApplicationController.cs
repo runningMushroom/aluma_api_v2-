@@ -220,15 +220,28 @@ namespace alumaApi.Controllers
         }
 
         [HttpPost("upload/documents")]
-        public IActionResult UploadDocuments([FromBody] List<ApplicationDocumentsDto> dto)
+        public IActionResult UploadDocuments([FromBody] ApplicationDocumentsDto dto)
         {
             try
             {
-                var documentList = _mapper.Map<List<ApplicationDocumentsModel>>(dto);
+                // set manual applicaiton to complete true if 1 or more docs saved
+                if (dto != null)
+                {
+                    var docuemnt = _mapper.Map<ApplicationDocumentsModel>(dto);
 
-                documentList.ForEach(d => _repo.ApplicationDocuments.Create(d));
+                    _repo.ApplicationDocuments.Create(docuemnt);
 
-                _repo.Save();
+                    var step = _repo.ApplicationSteps
+                        .FindByCondition(
+                            c => c.ApplicationId == docuemnt.ApplicationId &&
+                            c.StepType == ApplicationStepTypesEnum.ManualKyc)
+                        .First();
+
+                    step.Complete = true;
+                    _repo.ApplicationSteps.Update(step);
+
+                    _repo.Save();
+                }
 
                 return StatusCode(201);
             }
