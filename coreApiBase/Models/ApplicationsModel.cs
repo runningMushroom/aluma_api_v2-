@@ -18,17 +18,15 @@ namespace alumaApi.Models
         public ICollection<ApplicationStepModel> Steps { get; set; }
         public ICollection<ApplicationDocumentsModel> Documents { get; set; }
         public KycMetaDataModel KycMetaData { get; set; }
-        public bool SigningRightsGiven { get; set; }
-        public bool Signed { get; set; }
         public string Description { get; set; }
+        public bool PrimaryFormsComplete { get; set; }
+        public bool SecondaryFormsComplete { get; set; }
+        public bool BankValidationComplete { get; set; }
+        public bool DocumentsCreated { get; set; }
+        public bool AllowSignature { get; set; }
+        public bool DocumentsSigned { get; set; }
         public string BdaNumber { get; set; }
         public bool PaymentConfirmed { get; set; }
-
-        public ApplicationsModel()
-        {
-            Signed = false;
-            PaymentConfirmed = false;
-        }
     }
 
     public class ApplicationModelBuilder : IEntityTypeConfiguration<ApplicationsModel>

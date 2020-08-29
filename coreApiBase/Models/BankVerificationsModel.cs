@@ -12,7 +12,6 @@ namespace alumaApi.Models
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
         public Guid StepId { get; set; }
-        public int ChecksCount { get; set; }
         public string JobID { get; set; }
         public string Name { get; set; }
         public string SearchData { get; set; }
@@ -34,10 +33,5 @@ namespace alumaApi.Models
         public string NamesMatch { get; set; }
         public string AcceptDebits { get; set; }
         public string AcceptCredits { get; set; }
-
-        public BankVerificationsModel()
-        {
-            ChecksCount = 0;
-        }
     }
 }

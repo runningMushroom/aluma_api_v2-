@@ -15,7 +15,7 @@ namespace alumaApi.Models
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
         public Guid StepId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid AdvisorId { get; set; }
         public string Introduction { get; set; }
         public string Notes { get; set; }
         public string MaterialInformation { get; set; }

@@ -30,6 +30,13 @@ namespace alumaApi.Controllers
         {
             try
             {
+                // since there are no secondary schedules we can set secondary forms to complete
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == applicationId)
+                    .First();
+                application.SecondaryFormsComplete = true;
+                _repo.Applications.Update(application);
+
                 var thisStep = _repo.ApplicationSteps
                         .FindByCondition(
                             c => c.ApplicationId == applicationId &&

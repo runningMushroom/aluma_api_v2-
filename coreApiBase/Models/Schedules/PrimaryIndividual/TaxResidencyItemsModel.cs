@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace alumaApi.Models.Schedules.PrimaryIndividual
 {
     [Table("primary_schedule_individual_tax_residency_items")]
-    public class TaxResidencyItemsModel
+    public class TaxResidencyItemsModel : BaseModel
     {
         public Guid Id { get; set; }
         public Guid TasResidencyId { get; set; }

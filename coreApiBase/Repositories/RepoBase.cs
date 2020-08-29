@@ -40,11 +40,13 @@ namespace alumaApi.Repositories
 
         public void Create(T entity)
         {
+            entity.GetType().GetProperty("Modified").SetValue(entity, DateTime.Now);
             this.DatabaseContext.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
+            entity.GetType().GetProperty("Modified").SetValue(entity, DateTime.Now);
             this.DatabaseContext.Set<T>().Update(entity);
         }
 

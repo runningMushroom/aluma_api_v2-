@@ -12,7 +12,10 @@ namespace alumaApi.Models
     [Table("users")]
     public class UserModel : BaseUserModel
     {
+        public byte[] Signature { get; set; }
+        public byte[] ProfileImage { get; set; }
         public ICollection<ApplicationsModel> Applications { get; set; }
+        public BrokerDetailsModel BrokerDetails { get; set; }
     }
 
     public class UserModelBuilder : IEntityTypeConfiguration<UserModel>
@@ -29,6 +32,11 @@ namespace alumaApi.Models
                 .HasForeignKey(c => c.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            mb.HasOne(c => c.BrokerDetails)
+                .WithOne(c => c.User)
+                .HasForeignKey<BrokerDetailsModel>(c => c.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
             mb.HasData(new UserModel()
             {
                 Id = Guid.NewGuid(),
@@ -39,7 +47,19 @@ namespace alumaApi.Models
                 MobileNumber = "0810000000",
                 MobileVerified = true,
                 Role = Roles.Admin,
-                Password = _hasher.CreateHash("12qwaszx")
+                Password = _hasher.CreateHash("12qwaszx"),
+                //BrokerDetails = new BrokerDetailsModel()
+                //{
+                //    UnitNo = "922",
+                //    Complex = "Cheverney",
+                //    StreetNo = "30",
+                //    StreetName = "Joan",
+                //    Suburb = "La Montagne",
+                //    City = "Pretoria",
+                //    PostalCode = "0184",
+                //    Country = "South Africa",
+                //    Supervised = false,
+                //}
             });
         }
     }

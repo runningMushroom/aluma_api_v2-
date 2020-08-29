@@ -251,6 +251,29 @@ namespace alumaApi.Controllers
             }
         }
 
+        [HttpPost("primary/forms/completed/{applicationId}")]
+        public IActionResult PrimaryFormsComplete(Guid applicationId)
+        {
+            try
+            {
+                var applciation = _repo.Applications
+                    .FindByCondition(c => c.Id == applicationId)
+                    .First();
+
+                applciation.PrimaryFormsComplete = true;
+
+                // check if there was a mismatch between the clients risk profile & selected products
+
+                // if the bankvalidation is complete proceed to create the required documents
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
         private void ChangeApplicationStep(Guid applicationId)
         {
             // get the current step for this application

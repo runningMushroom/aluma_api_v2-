@@ -103,7 +103,7 @@ namespace alumaApi.Controllers
                 // map advise & apped stepId
                 var advise = _mapper.Map<AdvisorAdviseModel>(dto);
                 advise.StepId = step.Id;
-                advise.UserId = claims.UserId;
+                advise.AdvisorId = claims.UserId;
 
                 // add advise object to db
                 _repo.AdvisorAdvise.Create(advise);

@@ -28,6 +28,7 @@ namespace alumaApi.Controllers
         }
 
         [HttpPut("{applicationId}")]
+        [AutomaticRetry(Attempts = 30, DelaysInSeconds = new int[] { 900 })]
         public IActionResult PutBankVerification([FromBody] BankVerificationsDto dto, Guid applicationId)
         {
             try
@@ -113,7 +114,7 @@ namespace alumaApi.Controllers
 
                 // add check status update to hanfire que - it should start in 3 minutes from now
                 BackgroundJob.Schedule(() => _repo.BankVerification
-                    .CheckBankValidationStatusByJobId(jobID), TimeSpan.FromMinutes(3));
+                    .CheckBankValidationStatusByJobId(jobID), TimeSpan.FromMinutes(5));
 
                 _repo.Save();
 

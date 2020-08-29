@@ -57,8 +57,13 @@ namespace alumaApi.Repositories
                 var step = _context.ApplicationSteps
                     .First(c => c.ApplicationId == bav.ApplicationId && c.StepType == ApplicationStepTypesEnum.BankValidation);
                 step.Complete = true;
-
                 _context.ApplicationSteps.Update(step);
+
+                // set the application bank validation to complete
+                var application = _context.Applications.Find(step.ApplicationId);
+                application.BankValidationComplete = true;
+                _context.Applications.Update(application);
+
                 _context.SaveChanges();
             }
             else

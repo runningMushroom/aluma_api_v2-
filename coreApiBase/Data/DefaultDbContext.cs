@@ -33,6 +33,7 @@ namespace alumaApi.Data
         public DbSet<ApplicationsModel> Applications { get; set; }
         public DbSet<ApplicationStepModel> ApplicationSteps { get; set; }
         public DbSet<BankVerificationsModel> BankVerifications { get; set; }
+        public DbSet<BrokerDetailsModel> BrokerDetails { get; set; }
         public DbSet<DividendTaxModel> Dividends { get; set; }
         public DbSet<FspMandateModel> FspMandatates { get; set; }
         public DbSet<KycMetaDataModel> KycMetaData { get; set; }

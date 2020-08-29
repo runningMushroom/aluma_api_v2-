@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using alumaApi.Data;
 
 namespace alumaApi.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200828221605_036")]
+    partial class _036
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,9 +25,6 @@ namespace alumaApi.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AdvisorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ApplicationId")
@@ -47,6 +46,9 @@ namespace alumaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("StepId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -298,56 +300,6 @@ namespace alumaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("bank_verification");
-                });
-
-            modelBuilder.Entity("alumaApi.Models.BrokerDetailsModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Complex")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Suburb")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Supervised")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UnitNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("broker_details");
                 });
 
             modelBuilder.Entity("alumaApi.Models.DividendTaxModel", b =>
@@ -1307,15 +1259,9 @@ namespace alumaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ProfileImage")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("Signature")
-                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
@@ -1334,8 +1280,8 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ba65815f-76f3-466e-98d2-6afcf3f0f69d"),
-                            Created = new DateTime(2020, 8, 29, 1, 37, 5, 194, DateTimeKind.Local).AddTicks(1018),
+                            Id = new Guid("ad683efc-1800-422c-9a6c-53a3baa11df6"),
+                            Created = new DateTime(2020, 8, 29, 0, 16, 4, 884, DateTimeKind.Local).AddTicks(6915),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
                             IdNumber = "9000000000000",
@@ -1343,7 +1289,7 @@ namespace alumaApi.Migrations
                             MobileNumber = "0810000000",
                             MobileVerified = true,
                             Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9765.Av4F4zTT4FpLJJmiG2YM3w==.+lRiPNugBSkTLswjkU6h0WY1G1szAzPovdy0a1rETc8=",
+                            Password = "9248.Q4i2h4Xpbzeg2spwy2GzpA==.dBpca0Q+sJvcC+I03vW17GD+QFXdwVhTJCSl6qOy9Og=",
                             Role = "Admin"
                         });
                 });
@@ -1380,15 +1326,6 @@ namespace alumaApi.Migrations
                     b.HasOne("alumaApi.Models.UserModel", "User")
                         .WithMany("Applications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("alumaApi.Models.BrokerDetailsModel", b =>
-                {
-                    b.HasOne("alumaApi.Models.UserModel", "User")
-                        .WithOne("BrokerDetails")
-                        .HasForeignKey("alumaApi.Models.BrokerDetailsModel", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

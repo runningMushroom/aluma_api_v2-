@@ -7,5 +7,11 @@ namespace alumaApi.Models
     {
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
+
+        public BaseModel()
+        {
+            Created = DateTime.Now;
+            Modified = DateTime.Now;
+        }
     }
 }

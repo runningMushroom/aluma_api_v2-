@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace alumaApi.Models
 {
     [Table("record_of_advise_items")]
-    public class RecordOfAdviseItemsModel
+    public class RecordOfAdviseItemsModel : BaseModel
     {
         public Guid Id { get; set; }
         public Guid RecordOfAdviseId { get; set; }
