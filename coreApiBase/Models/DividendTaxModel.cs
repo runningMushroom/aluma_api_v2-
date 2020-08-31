@@ -22,8 +22,10 @@ namespace alumaApi.Models
         public string Address { get; set; }
         public string Postal { get; set; }
         public string Country { get; set; }
-        public string TitleSurname { get; set; }
-        public string InitialsFirstName { get; set; }
+        public string Title { get; set; }
+        public string Surname { get; set; }
+        public string Initials { get; set; }
+        public string FirstName { get; set; }
         public string IdNoPassport { get; set; }
         public string Work { get; set; }
         public string Home { get; set; }

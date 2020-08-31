@@ -51,6 +51,9 @@ namespace PbVerifyBankValidation
         [JsonProperty("INITIALS")]
         public string Initials { get; set; }
 
+        [JsonProperty("INITIALSMATCH")]
+        public string InitialsMatch { get; set; }
+
         [JsonProperty("SURNAME")]
         public string Surname { get; set; }
 

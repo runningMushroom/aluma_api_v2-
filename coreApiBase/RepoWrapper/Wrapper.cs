@@ -9,6 +9,7 @@ using JwtAuthentication;
 using KycFactory;
 using alumaApi.Repositories.Shedules;
 using PbVerifyBankValidation;
+using Microsoft.AspNetCore.Hosting;
 
 namespace alumaApi.RepoWrapper
 {
@@ -42,9 +43,12 @@ namespace alumaApi.RepoWrapper
         private IStringHasher _hasher;
         private ITokenProvider _tokenProvider;
 
-        public Wrapper(DefaultDbContext dbContext)
+        private readonly IWebHostEnvironment _host;
+
+        public Wrapper(DefaultDbContext dbContext, IWebHostEnvironment host)
         {
             _dbContext = dbContext;
+            _host = host;
         }
 
         public IAdvisorAdvisedProductsRepo AdvisorAdvisedProducts
@@ -64,7 +68,7 @@ namespace alumaApi.RepoWrapper
 
         public IApplicationRepo Applications
         {
-            get { return _application == null ? new ApplicationRepo(_dbContext) : _application; }
+            get { return _application == null ? new ApplicationRepo(_dbContext, _host) : _application; }
         }
 
         public IApplicationStepRepo ApplicationSteps

@@ -30,6 +30,12 @@ namespace alumaApi.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("test/pdf/filler"), AllowAnonymous]
+        public IActionResult TestPdfFiller()
+        {
+            return Ok(_mapper.Map<ApplicationDocumentsDto>(_repo.Applications.PopulateTestDocument()));
+        }
+
         [HttpPost("create/{scheduleType}")]
         public IActionResult Create(string scheduleType)
         {

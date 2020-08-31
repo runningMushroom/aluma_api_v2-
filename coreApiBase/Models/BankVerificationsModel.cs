@@ -24,6 +24,7 @@ namespace alumaApi.Models
         public string AccountId { get; set; }
         public string IdNumber { get; set; }
         public string Initials { get; set; }
+        public string InitialsMatch { get; set; }
         public string Surname { get; set; }
         public string FoundAtBank { get; set; }
         public string AccOpen { get; set; }

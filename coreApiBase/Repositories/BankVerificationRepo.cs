@@ -34,7 +34,7 @@ namespace alumaApi.Repositories
             if (bavStatus.Status.ToLower() == "success")
             {
                 var result = bavStatus.Results;
-                bav.Reference = result.Reference;
+                bav.Reference = "Verification";
                 //bav.AccountType = result.AccountType;
                 //bav.VerificationType = result.VerificationType;
                 bav.BranchCode = result.BranchCode;
