@@ -45,6 +45,7 @@
     <ProjectReference Include="..\BulkSms\BulkSms.csproj" />
     <ProjectReference Include="..\KycFactory\KycFactory.csproj" />
     <ProjectReference Include="..\PbVerifyBankValidation\PbVerifyBankValidation.csproj" />
+    <ProjectReference Include="..\Signiflow\Signiflow.csproj" />
   </ItemGroup>
 
   <ItemGroup>

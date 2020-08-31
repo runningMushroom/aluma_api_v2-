@@ -7,6 +7,7 @@ using alumaApi.Repositories;
 using KycFactory;
 using alumaApi.Repositories.Shedules;
 using PbVerifyBankValidation;
+using Signiflow;
 
 namespace alumaApi.RepoWrapper
 {
@@ -37,6 +38,7 @@ namespace alumaApi.RepoWrapper
         IKycFactoryRepo KycFactory { get; }
         IMailSender SendMail { get; }
         IPvBerifyBankValidationRepo PbVerifyBankValidation { get; }
+        ISigniflowRepo Signiflow { get; }
         IStringHasher StrHasher { get; }
         ITokenProvider TokenProvider { get; }
 

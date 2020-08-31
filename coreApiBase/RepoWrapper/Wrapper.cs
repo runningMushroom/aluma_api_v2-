@@ -10,6 +10,7 @@ using KycFactory;
 using alumaApi.Repositories.Shedules;
 using PbVerifyBankValidation;
 using Microsoft.AspNetCore.Hosting;
+using Signiflow;
 
 namespace alumaApi.RepoWrapper
 {
@@ -40,15 +41,17 @@ namespace alumaApi.RepoWrapper
         private IKycFactoryRepo _kyc;
         private IMailSender _mailSender;
         private IPvBerifyBankValidationRepo _pbVerifyBankValidation;
+        private ISigniflowRepo _signiflow;
         private IStringHasher _hasher;
         private ITokenProvider _tokenProvider;
 
         private readonly IWebHostEnvironment _host;
 
-        public Wrapper(DefaultDbContext dbContext, IWebHostEnvironment host)
+        public Wrapper(DefaultDbContext dbContext, IWebHostEnvironment host, ISigniflowRepo signiflow)
         {
             _dbContext = dbContext;
             _host = host;
+            _signiflow = signiflow;
         }
 
         public IAdvisorAdvisedProductsRepo AdvisorAdvisedProducts
@@ -68,7 +71,7 @@ namespace alumaApi.RepoWrapper
 
         public IApplicationRepo Applications
         {
-            get { return _application == null ? new ApplicationRepo(_dbContext, _host) : _application; }
+            get { return _application == null ? new ApplicationRepo(_dbContext, _host, _signiflow) : _application; }
         }
 
         public IApplicationStepRepo ApplicationSteps
@@ -152,6 +155,11 @@ namespace alumaApi.RepoWrapper
         public IPvBerifyBankValidationRepo PbVerifyBankValidation
         {
             get { return _pbVerifyBankValidation == null ? new PvBerifyBankValidationRepo() : _pbVerifyBankValidation; }
+        }
+
+        public ISigniflowRepo Signiflow
+        {
+            get { return _signiflow == null ? new SigniflowRepo() : _signiflow; }
         }
 
         public IStringHasher StrHasher

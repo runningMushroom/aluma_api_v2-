@@ -10,6 +10,7 @@ using MailKit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
+using Signiflow;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,17 +23,307 @@ namespace alumaApi.Repositories
         ApplicationDocumentsModel PopulateTestDocument();
 
         void CreateDocuments(Guid applicationId);
+
+        void SignDocuments(Guid applicationId);
+
+        void ProcessApplication(Guid applicationId);
     }
 
     public class ApplicationRepo : RepoBase<ApplicationsModel>, IApplicationRepo
     {
         private readonly DefaultDbContext _context;
         private readonly IWebHostEnvironment _host;
+        private readonly ISigniflowRepo _signiflow;
 
-        public ApplicationRepo(DefaultDbContext databaseContext, IWebHostEnvironment host) : base(databaseContext)
+        public ApplicationRepo(DefaultDbContext databaseContext, IWebHostEnvironment host,
+            ISigniflowRepo signiflow) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
+            _signiflow = signiflow;
+        }
+
+        public void ProcessApplication(Guid applicationId)
+        {
+            var application = _context.Applications.Find(applicationId);
+
+            if (!application.PrimaryFormsComplete)
+                throw new Exception("PrimaryFormsComplete_False");
+
+            if (!application.BankValidationComplete)
+                throw new Exception("BankValidationComplete_False");
+
+            if (!application.DocumentsCreated)
+                CreateDocuments(applicationId);
+
+            if (!application.DocumentsSigned && !application.AllowSignature)
+                throw new Exception("AllowSignature_False");
+
+            if (!application.DocumentsSigned && application.AllowSignature)
+                SignDocuments(applicationId);
+        }
+
+        public void SignDocuments(Guid applicationId)
+        {
+            var application = _context.Applications
+                .Where(c => c.Id == applicationId)
+                .Include(c => c.Documents)
+                .Include(c => c.User)
+                .Include(c => c.Steps)
+                .First();
+
+            var advisorId = _context.AdvisorAdvise
+                .Where(c => c.ApplicationId == applicationId)
+                .First()
+                .AdvisorId;
+
+            var advisor = _context.Users
+                .Where(c => c.Id == advisorId)
+                .Include(c => c.BrokerDetails)
+                .First();
+
+            application.Documents.ToList().ForEach(doc =>
+            {
+                List<SignerListItemDto> signers = null;
+
+                signers =
+                    // Intro Letter
+                    doc.DocumentType == DocumentTypesEnum.IntorLetter ?
+                        new List<SignerListItemDto>()
+                        {   // client
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 40,
+                                YField = 690,
+                                HField = 90,
+                                WField = 120,
+                                Page = 2
+                            })
+                        } :
+
+                    // FNA
+                    doc.DocumentType == DocumentTypesEnum.FinancialNeedsAnalysis ?
+                        new List<SignerListItemDto>()
+                        {   // client
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 350,
+                                YField = 575,
+                                HField = 90,
+                                WField = 120,
+                                Page = 1,
+                            }),
+                            // advisor
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(advisor.Signature),
+                                FirstName = advisor.FirstName,
+                                LastName = advisor.LastName,
+                                Email = advisor.Email,
+                                IdNo = advisor.IdNumber,
+                                Mobile = advisor.MobileNumber,
+                                XField = 440,
+                                YField = 635,
+                                HField = 90,
+                                WField = 120,
+                                Page = 1,
+                            })
+                        } :
+
+                    // Primary Schedule Individual
+                    doc.DocumentType == DocumentTypesEnum.PrimarySchedule &&
+                        application.Steps.First(c => c.StepType == ApplicationStepTypesEnum.PrimarySchedule).ScheduleType == "Individual" ?
+                        new List<SignerListItemDto>()
+                        {   // client
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 180,
+                                YField = 110,
+                                Page = 5
+                            })
+                        } :
+
+                    // Risk Profile
+                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
+                        new List<SignerListItemDto>()
+                        {   // client
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 160,
+                                YField = 320,
+                                HField = 90,
+                                WField = 120,
+                                Page = 2
+                            })
+                        } :
+
+                    // Record of advise
+                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
+                        new List<SignerListItemDto>()
+                        {   // client
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 120,
+                                YField = 590,
+                                Page = 4
+                            }),
+                            // advisor
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(advisor.Signature),
+                                FirstName = advisor.FirstName,
+                                LastName = advisor.LastName,
+                                Email = advisor.Email,
+                                IdNo = advisor.IdNumber,
+                                Mobile = advisor.MobileNumber,
+                                XField = 380,
+                                YField = 580,
+                                Page = 4
+                            })
+                        } :
+
+                    // fsp mandate
+                    doc.DocumentType == DocumentTypesEnum.FspMandate ?
+                        FspMandateSigningList(application, advisor) :
+
+                    // Dividend tax
+                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
+                        new List<SignerListItemDto>()
+                        {   // client initial
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                IncludeSignedBy = false,
+                                XField = 470,
+                                YField = 725,
+                                HField = 60,
+                                WField = 80,
+                                Page = 1
+                            }),
+                            // client signature
+                            _signiflow.CreateSignerListItem(new SignerDto() {
+                                Signature = Convert.ToBase64String(application.User.Signature),
+                                FirstName = application.User.FirstName,
+                                LastName = application.User.LastName,
+                                Email = application.User.Email,
+                                IdNo = application.User.IdNumber,
+                                Mobile = application.User.MobileNumber,
+                                XField = 400,
+                                YField = 145,
+                                Page = 2
+                            })
+                        } :
+                    null;
+
+                var ceremony = _signiflow.CreateMultipleSignersCeremony(doc.DocuemtnData,
+                    doc.Name, signers);
+
+                doc.DocuemtnData = Convert.FromBase64String(
+                    _signiflow.RunMultiSignerCeremony(ceremony));
+
+                _context.ApplicationDocuments.Update(doc);
+            });
+
+            application.DocumentsSigned = true;
+            _context.Applications.Update(application);
+            _context.SaveChanges();
+        }
+
+        private List<SignerListItemDto> FspMandateSigningList(ApplicationsModel application, UserModel advisor)
+        {
+            var signerList = new List<SignerListItemDto>();
+
+            var mandate = _context.FspMandatates
+                .Where(c => c.ApplicationId == application.Id)
+                .First();
+
+            var pageList = mandate.Objective[0].ToString() == "L" ?
+                new List<int> { 2, 3, 4, 5, 6, 7, 8 } : // Limited Discretiuon
+                new List<int> { 2, 3, 4, 5, 6, 7, 9 }; // Full Discretion
+
+            pageList.ForEach(p => signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
+            {
+                Signature = Convert.ToBase64String(application.User.Signature),
+                FirstName = application.User.FirstName,
+                LastName = application.User.LastName,
+                Email = application.User.Email,
+                IdNo = application.User.IdNumber,
+                Mobile = application.User.MobileNumber,
+                IncludeSignedBy = false,
+                XField = 480,
+                YField = 775,
+                HField = 60,
+                WField = 80,
+                Page = p
+            })));
+
+            signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
+            {   // client
+                Signature = Convert.ToBase64String(application.User.Signature),
+                FirstName = application.User.FirstName,
+                LastName = application.User.LastName,
+                Email = application.User.Email,
+                IdNo = application.User.IdNumber,
+                Mobile = application.User.MobileNumber,
+                XField = 160,
+                YField = 590,
+                Page = 7
+            }));
+
+            signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
+            {   // client
+                Signature = Convert.ToBase64String(application.User.Signature),
+                FirstName = application.User.FirstName,
+                LastName = application.User.LastName,
+                Email = application.User.Email,
+                IdNo = application.User.IdNumber,
+                Mobile = application.User.MobileNumber,
+                XField = mandate.Objective[0].ToString() == "L" ? 120 : 160,
+                YField = mandate.Objective[0].ToString() == "L" ? 680 : 520,
+                Page = mandate.Objective[0].ToString() == "L" ? 9 : 8
+            }));
+
+            signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
+            {   // Advisor
+                Signature = Convert.ToBase64String(advisor.Signature),
+                FirstName = advisor.FirstName,
+                LastName = advisor.LastName,
+                Email = advisor.Email,
+                IdNo = advisor.IdNumber,
+                Mobile = advisor.MobileNumber,
+                XField = 160,
+                YField = 470,
+                Page = 7
+            }));
+
+            return signerList;
         }
 
         public void CreateDocuments(Guid applicationId)
@@ -109,123 +400,86 @@ namespace alumaApi.Repositories
 
             var divTax = _context.Dividends.First(c => c.ApplicationId == applicationId);
 
-            // create intro letter (every application will require one)
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.IntorLetter))
+            var documentList = new List<ApplicationDocumentsModel>();
+
+            // intro letter
+            documentList.Add(kycExist == true ?
+                CreateIntroLetter(appl.User, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
+                CreateIntroLetter(appl.User, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber));
+
+            // FNA
+            documentList.Add(kycExist == true ?
+                CreateFinancialNeedsAnalysis(roa, address.City, kyc.FirstNames, kyc.SurName, kyc.IdNumber, advisor) :
+                CreateFinancialNeedsAnalysis(roa, address.City, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber, advisor));
+
+            // Bank Validation
+            documentList.Add(kycExist == true ?
+                CreateBankValidationReport(bankValidation, kyc.FirstNames, kyc.SurName) :
+                CreateBankValidationReport(bankValidation, appl.User.FirstName, appl.User.LastName));
+
+            // Primary Schedule
+            ApplicationDocumentsModel schedulePrimary = null;
+            if (scheduleStep.ScheduleType == "Individual")
             {
-                ApplicationDocumentsModel introLetter = kycExist == true ?
-                    CreateIntroLetter(appl.User, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
-                    CreateIntroLetter(appl.User, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber);
+                var schedule = _context.PrimaryIndividuals
+                .Where(c => c.ApplicationId == applicationId)
+                .Include(c => c.ContactDetails)
+                .Include(c => c.ClientDetails)
+                .Include(c => c.TaxResidency)
+                .First();
 
-                introLetter.ApplicationId = appl.Id;
-                introLetter.Name = $"Intro Letter: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(introLetter);
-                _context.SaveChanges();
-            }
+                schedulePrimary = CreatePrimaryIndividualSchedule(schedule, bankValidation);
+            };
 
-            // create FNA (every application will require one)
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.FinancialNeedsAnalysis))
+            // Risk Profile
+            documentList.Add(kycExist == true ?
+                CreateRiskProfile(risk, advisor, advise, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
+                CreateRiskProfile(risk, advisor, advise, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber));
+
+            // Record Of Advise
+            documentList.Add(kycExist == true ?
+                CreateRecordOfAdvie(roa, kyc.FirstNames, kyc.SurName, kyc.IdNumber, advisor, risk, advise) :
+                CreateRecordOfAdvie(roa, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber, advisor, risk, advise));
+
+            // FSP Mandate
+            documentList.Add(kycExist == true ?
+                CreateFspMandate(kyc.FirstNames, kyc.SurName, risk, fdpMandate, address, appl.User, advisor, roa, bankValidation) :
+                CreateFspMandate(appl.User.FirstName, appl.User.LastName, risk, fdpMandate, address, appl.User, advisor, roa, bankValidation));
+
+            // Dividend
+            documentList.Add(kycExist == true ?
+                CreateDividendTax(divTax, address, client, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
+                CreateDividendTax(divTax, address, client, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber));
+
+            documentList.ForEach(doc =>
             {
-                ApplicationDocumentsModel fna = kycExist == true ?
-                    CreateFinancialNeedsAnalysis(roa, address.City, kyc.FirstNames, kyc.SurName, kyc.IdNumber, advisor) :
-                    CreateFinancialNeedsAnalysis(roa, address.City, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber, advisor);
+                doc.ApplicationId = appl.Id;
+                doc.Name =
+                    doc.DocumentType == DocumentTypesEnum.IntorLetter ?
+                        $"Intro Letter: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.FinancialNeedsAnalysis ?
+                        $"Financial Needs Analysis: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.BankVerification ?
+                        $"Bank Validation Report: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.PrimarySchedule ?
+                        $"Primary Schedule, Individual: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
+                        $"Risk Profile: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.RecordOfAdvise ?
+                        $"Record of Advise: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.FspMandate ?
+                        $"FSP Mandate: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    doc.DocumentType == DocumentTypesEnum.Dividende ?
+                        $"Dividend Tax: {appl.User.FirstName} {appl.User.LastName}.pdf" :
+                    null;
 
-                fna.ApplicationId = appl.Id;
-                fna.Name = $"Intro Letter: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(fna);
+                if (appl.Documents.Any(c => c.DocumentType == doc.DocumentType))
+                    _context.ApplicationDocuments.Update(doc);
+                else
+                    _context.ApplicationDocuments.Add(doc);
+
                 _context.SaveChanges();
-            }
-
-            // create bank validation report
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.BankVerification))
-            {
-                ApplicationDocumentsModel bv = kycExist == true ?
-                    CreateBankValidationReport(bankValidation, kyc.FirstNames, kyc.SurName) :
-                    CreateBankValidationReport(bankValidation, appl.User.FirstName, appl.User.LastName);
-
-                bv.ApplicationId = appl.Id;
-                bv.Name = $"Intro Letter: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(bv);
-                _context.SaveChanges();
-            }
-
-            // create shcedule
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.PrimarySchedule))
-            {
-                ApplicationDocumentsModel schedulePrimary = null;
-
-                if (scheduleStep.ScheduleType == "Individual")
-                {
-                    var schedule = _context.PrimaryIndividuals
-                    .Where(c => c.ApplicationId == applicationId)
-                    .Include(c => c.ContactDetails)
-                    .Include(c => c.ClientDetails)
-                    .Include(c => c.TaxResidency)
-                    .First();
-
-                    CreatePrimaryIndividualSchedule(schedule, bankValidation);
-                }
-
-                schedulePrimary.ApplicationId = appl.Id;
-                schedulePrimary.Name = $"Schedule Primary Individual: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(schedulePrimary);
-                _context.SaveChanges();
-            }
-
-            // create risk profile
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.RiskProfile))
-            {
-                ApplicationDocumentsModel riskProfile = kycExist == true ?
-                    CreateRiskProfile(risk, advisor, advise, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
-                    CreateRiskProfile(risk, advisor, advise, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber);
-
-                riskProfile.ApplicationId = appl.Id;
-                riskProfile.Name = $"Risk Profile: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(riskProfile);
-                _context.SaveChanges();
-            }
-
-            // create record of advise
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.RecordOfAdvise))
-            {
-                ApplicationDocumentsModel recordOfAdvise = kycExist == true ?
-                    CreateRecordOfAdvie(roa, kyc.FirstNames, kyc.SurName, kyc.IdNumber, advisor, risk, advise) :
-                    CreateRecordOfAdvie(roa, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber,
-                        advisor, risk, advise);
-
-                recordOfAdvise.ApplicationId = appl.Id;
-                recordOfAdvise.Name = $"Record of Advise: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(recordOfAdvise);
-                _context.SaveChanges();
-            }
-
-            // create fsp mandata
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.FspMandate))
-            {
-                ApplicationDocumentsModel mandate = kycExist == true ?
-                    CreateFspMandate(kyc.FirstNames, kyc.SurName, risk, fdpMandate, address, appl.User,
-                        advisor, roa, bankValidation) :
-                    CreateFspMandate(appl.User.FirstName, appl.User.LastName, risk, fdpMandate, address,
-                        appl.User, advisor, roa, bankValidation);
-
-                mandate.ApplicationId = appl.Id;
-                mandate.Name = $"FSP Mandate: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(mandate);
-                _context.SaveChanges();
-            }
-
-            // create dividend tax form
-            if (appl.Documents.Any(c => c.DocumentType == DocumentTypesEnum.Dividende))
-            {
-                ApplicationDocumentsModel dividend = kycExist == true ?
-                    CreateDividendTax(divTax, address, client, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
-                    CreateDividendTax(divTax, address, client, appl.User.FirstName, appl.User.LastName,
-                        appl.User.IdNumber);
-
-                dividend.ApplicationId = appl.Id;
-                dividend.Name = $"Dividend Tax: {appl.User.FirstName} {appl.User.LastName}";
-                _context.ApplicationDocuments.Add(dividend);
-                _context.SaveChanges();
-            }
+            });
 
             // update applicaiton - documents created
             appl.DocumentsCreated = true;
@@ -273,7 +527,11 @@ namespace alumaApi.Repositories
             d["Exemption_7"] = dividend.Exemption_7 ?? string.Empty;
             d["Exemption_8"] = dividend.Exemption_8 ?? string.Empty;
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("Dividend.pdf", d) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("Dividend.pdf", d),
+                DocumentType = DocumentTypesEnum.Dividende
+            };
         }
 
         private ApplicationDocumentsModel CreateFspMandate(string firstname, string lastname,
@@ -328,7 +586,11 @@ namespace alumaApi.Repositories
             var na = man.Objective[0].ToString() == "L" ? "LNA" : "FNA";
             d[na] = "N/A";
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("FspMandate.pdf", d) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("FspMandate.pdf", d),
+                DocumentType = DocumentTypesEnum.FspMandate
+            };
         }
 
         private ApplicationDocumentsModel CreateRecordOfAdvie(RecordOfAdviseModel roa, string firstname,
@@ -375,7 +637,11 @@ namespace alumaApi.Repositories
                 data[$"{product.ProductName}_DeveationReason"] = product.DeveationReason ?? string.Empty; ;
             }
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("ROA.pdf.pdf", data) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("ROA.pdf.pdf", data),
+                DocumentType = DocumentTypesEnum.RecordOfAdvise
+            };
         }
 
         private ApplicationDocumentsModel CreateRiskProfile(RiskProfileModel r, UserModel adviser,
@@ -406,7 +672,11 @@ namespace alumaApi.Repositories
             // advisor notes
             d["advisorNotes"] = advise.Notes;
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("RiskProfile.pdf", d) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("RiskProfile.pdf", d),
+                DocumentType = DocumentTypesEnum.RiskProfile
+            };
         }
 
         private ApplicationDocumentsModel CreatePrimaryIndividualSchedule(PrimaryIndividualModel schedule, BankVerificationsModel bv)
@@ -517,7 +787,11 @@ namespace alumaApi.Repositories
             data["SignerCapacity"] = "Self";
             data["DateSigned"] = DateTime.Today.ToShortDateString();
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("PrimaryIndividual.pdf", data) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("PrimaryIndividual.pdf", data),
+                DocumentType = DocumentTypesEnum.PrimarySchedule
+            };
         }
 
         private ApplicationDocumentsModel CreateBankValidationReport(BankVerificationsModel bv, string firstName, string lastName)
@@ -543,7 +817,11 @@ namespace alumaApi.Repositories
             data["acceptDebits"] = bv.AcceptDebits ?? string.Empty;
             data["acceptCredits"] = bv.AcceptCredits ?? string.Empty;
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("BankVerificationReport.pdf", data) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("BankVerificationReport.pdf", data),
+                DocumentType = DocumentTypesEnum.BankVerification
+            };
         }
 
         private ApplicationDocumentsModel CreateFinancialNeedsAnalysis(RecordOfAdviseModel roa, string city,
@@ -572,7 +850,11 @@ namespace alumaApi.Repositories
             data["client"] = $"{firstName} {lastname} {idNumber}";
             data["advisor"] = $"{advisor.FirstName} {advisor.LastName} {advisor.IdNumber}";
 
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("IntroLetter.pdf", data) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("IntroLetter.pdf", data),
+                DocumentType = DocumentTypesEnum.FinancialNeedsAnalysis
+            };
         }
 
         private ApplicationDocumentsModel CreateIntroLetter(
@@ -591,7 +873,11 @@ namespace alumaApi.Repositories
             data["date"] = DateTime.Today.ToShortDateString();
 
             // create document
-            return new ApplicationDocumentsModel() { DocuemtnData = PopulateDocument("IntroLetter.pdf", data) };
+            return new ApplicationDocumentsModel()
+            {
+                DocuemtnData = PopulateDocument("IntroLetter.pdf", data),
+                DocumentType = DocumentTypesEnum.IntorLetter
+            };
         }
 
         public ApplicationDocumentsModel PopulateTestDocument()
