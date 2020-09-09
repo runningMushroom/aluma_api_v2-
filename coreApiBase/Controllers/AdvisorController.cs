@@ -19,7 +19,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace alumaApi.Controllers
 {
-    [ApiController, Route("api/v1/advisor"), Authorize]
+    [ApiController, Route("api/v1/advisor"), Authorize(Roles = "Admin,Broker")]
     public class AdvisorController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -42,6 +42,64 @@ namespace alumaApi.Controllers
                     .First();
 
                 return Ok(_mapper.Map<AdvisorAdviseDto>(advise));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("application/documents/{applicationId}")]
+        public IActionResult ApplicationDocList(Guid applicationId)
+        {
+            try
+            {
+                var docList = _repo.ApplicationDocuments
+                    .FindByCondition(c => c.ApplicationId == applicationId)
+                    .ToList();
+
+                return Ok(_mapper.Map<List<ApplicationDocumentsDto>>(docList));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("application/list")]
+        public IActionResult ApplicationList(int id = 0)
+        {
+            try
+            {
+                var applicationList = _repo.Applications
+                    .FindAll()
+                    .Include(c => c.User)
+                    .ToList();
+
+                return Ok(_mapper.Map<List<ApplicationsDto>>(applicationList));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("application")]
+        public IActionResult EditApplication(ApplicationsDto dto)
+        {
+            try
+            {
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == dto.Id)
+                    .First();
+
+                application.BdaNumber = dto.BdaNumber;
+                application.PaymentConfirmed = dto.PaymentConfirmed;
+
+                _repo.Applications.Update(application);
+                _repo.Save();
+
+                return Ok();
             }
             catch (Exception e)
             {

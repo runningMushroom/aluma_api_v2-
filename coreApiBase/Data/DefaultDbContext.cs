@@ -15,6 +15,7 @@ namespace alumaApi.Data
         protected override void OnModelCreating(ModelBuilder mb)
         {
             mb.ApplyConfiguration(new UserModelBuilder());
+            mb.ApplyConfiguration(new BrokerDetailsModelBuilder());
             mb.ApplyConfiguration(new ApplicationModelBuilder());
             mb.ApplyConfiguration(new AdvisorAdviseModelBuilder());
             mb.ApplyConfiguration(new RecordOfAdviseModelBuilder());

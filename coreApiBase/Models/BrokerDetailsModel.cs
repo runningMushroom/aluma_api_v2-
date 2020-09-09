@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -22,5 +24,27 @@ namespace alumaApi.Models
         public string Country { get; set; }
         public DateTime EmploymentDate { get; set; }
         public bool Supervised { get; set; }
+    }
+
+    public class BrokerDetailsModelBuilder : IEntityTypeConfiguration<BrokerDetailsModel>
+    {
+        public void Configure(EntityTypeBuilder<BrokerDetailsModel> mb)
+        {
+            mb.HasData(new BrokerDetailsModel()
+            {
+                Id = Guid.Parse("3F7CB4B6-3B03-4B28-B012-E602EC5A3AAF"),
+                UserId = Guid.Parse("3F7CB4B6-3B03-4B28-B012-E602EC5C36AF"),
+                UnitNo = "922",
+                Complex = "Cheverney",
+                StreetNo = "30",
+                StreetName = "Joan",
+                Suburb = "La Montagne",
+                City = "Pretoria",
+                PostalCode = "0184",
+                Country = "South Africa",
+                Supervised = false,
+                EmploymentDate = DateTime.Now.AddYears(-1),
+            });
+        }
     }
 }

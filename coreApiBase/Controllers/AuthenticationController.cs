@@ -32,7 +32,8 @@ namespace alumaApi.Controllers
                 var user = _repo.User.FindByCondition(c => c.Email == email).First();
 
                 // verify passwords match
-                if (!_repo.StrHasher.ValidateHash(user.Password, password))
+                var match = _repo.StrHasher.ValidateHash(user.Password, password);
+                if (!match)
                     return StatusCode(401, "Credentials Invalid");
 
                 var userDto = _mapper.Map<UserDto>(user);

@@ -13,6 +13,7 @@ using alumaApi.Models;
 using alumaApi.Enum;
 using System.Linq;
 using alumaApi.Models.Static;
+using Microsoft.Net.Http.Headers;
 
 namespace alumaApi.Controllers
 {
@@ -78,13 +79,84 @@ namespace alumaApi.Controllers
             }
         }
 
+        [HttpPut("edit")]
+        public IActionResult Edit([FromBody] UserDto dto)
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var user = _repo.User
+                    .FindByCondition(c => c.Id == claims.UserId)
+                    .First();
+
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;
+                user.IdNumber = dto.IdNumber;
+                user.Email = dto.Email;
+                user.MobileNumber = dto.MobileNumber;
+                _repo.User.Update(user);
+                _repo.Save();
+
+                return Ok(_mapper.Map<UserDto>(user));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("signature")]
+        public IActionResult GetSignature()
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var signature = _repo.User
+                    .FindByCondition(c => c.Id == claims.UserId)
+                    .First()
+                    .Signature;
+
+                return Ok(Convert.ToBase64String(signature) ?? null);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("edit/signature")]
+        public IActionResult Edit([FromBody] SignatureDto dto)
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var user = _repo.User
+                    .FindByCondition(c => c.Id == claims.UserId)
+                    .First();
+
+                user.Signature = Convert.FromBase64String(dto.Signature);
+                _repo.User.Update(user);
+                _repo.Save();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost("verify/account/{email}/{otp}"), AllowAnonymous]
         public IActionResult VerifyAccount(string email, string otp)
         {
             try
             {
                 // get otp object where emails match
-                var otpObjList = _repo.Otp.FindByCondition(c => c.ClientEmail == email);
+                var otpObjList = _repo.Otp.FindByCondition(
+                    c => c.ClientEmail == email && c.OtpType == OtpTypesEnum.Registration);
 
                 if (!otpObjList.Any())
                     return StatusCode(404, "OTP Object not found");

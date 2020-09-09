@@ -3,6 +3,7 @@ using alumaApi.Enum;
 using alumaApi.Models;
 using alumaApi.RepoWrapper;
 using AutoMapper;
+using Hangfire;
 using KycFactory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -209,15 +210,39 @@ namespace alumaApi.Controllers
             return Ok();
         }
 
+        [HttpGet("documents/{documentId}")]
+        public IActionResult GetDocumentById(Guid documentId)
+        {
+            try
+            {
+                var doc = _repo.ApplicationDocuments
+                    .FindByCondition(c => c.Id == documentId)
+                    .First();
+
+                return StatusCode(200, _mapper.Map<ApplicationDocumentsDto>(doc));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("documents/list/{applicationId}")]
         public IActionResult DocumentsList(Guid applicationId)
         {
             try
             {
                 var documentList = _repo.ApplicationDocuments
-                    .FindAll();
+                    .FindByCondition(c => c.ApplicationId == applicationId)
+                    .ToList();
 
-                return Ok(_mapper.Map<List<ApplicationDocumentsDto>>(documentList));
+                //Dictionary<Guid, string> docList = new Dictionary<Guid, string>();
+                var dtoList = _mapper.Map<List<ApplicationDocumentsDto>>(documentList);
+                dtoList.ForEach(d => d.DocuemtnData = null);
+
+                //documentList.ForEach(doc => docList[doc.Id] = doc.Name);
+
+                return Ok(dtoList);
             }
             catch (Exception e)
             {
@@ -267,11 +292,14 @@ namespace alumaApi.Controllers
                     .First();
 
                 applciation.PrimaryFormsComplete = true;
+                _repo.Applications.Update(applciation);
+                _repo.Save();
 
                 // check if there was a mismatch between the clients risk profile & selected products
 
                 // if the bankvalidation is complete proceed to create the required documents
 
+                BackgroundJob.Enqueue(() => _repo.Applications.ProcessApplication(applicationId));
                 return Ok();
             }
             catch (Exception e)
@@ -280,40 +308,99 @@ namespace alumaApi.Controllers
             }
         }
 
-        private void ChangeApplicationStep(Guid applicationId)
+        [HttpPost("process/now/{applicationId}")]
+        [AutomaticRetry(Attempts = 0)]
+        public IActionResult ProcessApplication(Guid applicationId)
         {
-            // get the current step for this application
-            var currentStep = _repo.ApplicationSteps
-                .FindByCondition(c => c.ApplicationId == applicationId && c.ActiveStep)
-                .First();
-
-            // set the step inactive and complete
-            currentStep.ActiveStep = false;
-            currentStep.Complete = true;
-            _repo.ApplicationSteps.Update(currentStep);
-
-            // get the next step to be completed
-            var nextStep = ReturnNextStep(applicationId, currentStep.Order);
-
-            switch (currentStep.StepType)
+            try
             {
-                case ApplicationStepTypesEnum.DigitalKyc:
-                    // TODO: Get KYC Meta Data & save it
+                BackgroundJob.Enqueue(() => _repo.Applications.ProcessApplication(applicationId));
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
-                    // set nextStep to active & save
-                    nextStep.ActiveStep = true;
-                    _repo.ApplicationSteps.Update(nextStep);
-                    _repo.Save();
-                    break;
+        [HttpGet("signing/right/otp/{applicationId}")]
+        public IActionResult RequestSigningRightsOtp(Guid applicationId)
+        {
+            try
+            {
+                var claims = _repo.Jwt.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                case ApplicationStepTypesEnum.BankValidation:
-                    nextStep.ActiveStep = true;
-                    _repo.ApplicationSteps.Update(nextStep);
-                    _repo.Save();
-                    break;
+                // get the client
+                var user = _repo.User
+                    .FindByCondition(c => c.Id == claims.UserId)
+                    .First();
 
-                default:
-                    throw new InvalidEnumArgumentException("Invalid step");
+                // create otp
+                var otp = new OtpModel()
+                {
+                    UserId = user.Id,
+                    ClientEmail = user.Email,
+                    OtpType = OtpTypesEnum.SignDocument,
+                    Otp = _repo.BulkSms.CreateOtp(),
+                    RelatedDataId = applicationId,
+                };
+                _repo.Otp.Create(otp);
+                _repo.Save();
+
+                // send otp
+                var otpSent = _repo.BulkSms.SendOtop(user.MobileNumber, $"Give Aluma Capital the " +
+                    $"rights to digitally sign application documents with OTP: {otp.Otp}");
+
+                if (!otpSent)
+                    return StatusCode(500, "Couldn't send OTP, Please retry or contact support");
+
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("signing/right/otp/{email}/{otp}/{applicationId}")]
+        [AutomaticRetry(Attempts = 0)]
+        public IActionResult VerifySigningRightsOtp(string email, string otp, Guid applicationId)
+        {
+            try
+            {
+                var otpObjList = _repo.Otp.FindByCondition(
+                    c => c.ClientEmail == email &&
+                    c.OtpType == OtpTypesEnum.SignDocument &&
+                    c.RelatedDataId == applicationId &&
+                    c.Otp == otp);
+
+                if (!otpObjList.Any())
+                    return StatusCode(404, "OTP not found");
+
+                var otpObj = otpObjList.First();
+
+                //if (otpObj.Otp != otp)
+                //    return StatusCode(403, "OTP Invalid");
+
+                // get the applicaiton
+                var application = _repo.Applications
+                    .FindByCondition(c => c.Id == applicationId)
+                    .First();
+
+                application.AllowSignature = true;
+                _repo.Applications.Update(application);
+                _repo.Save();
+
+                _repo.Otp.Delete(otpObj);
+                _repo.Save();
+
+                BackgroundJob.Enqueue(() => _repo.Applications.ProcessApplication(applicationId));
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
 

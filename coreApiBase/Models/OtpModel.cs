@@ -8,12 +8,13 @@ using alumaApi.Enum;
 namespace alumaApi.Models
 {
     [Table("otp")]
-    public class OtpModel
+    public class OtpModel : BaseModel
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string ClientEmail { get; set; }
         public OtpTypesEnum OtpType { get; set; }
         public string Otp { get; set; }
+        public Guid RelatedDataId { get; set; }
     }
 }

@@ -72,8 +72,8 @@ namespace PbVerifyBankValidation
         [JsonProperty("IDNUMBERMATCH")]
         public string IdNumberMatch { get; set; }
 
-        [JsonProperty("INITIALSMATCH")]
-        public string NamesMatch { get; set; }
+        [JsonProperty("SURNAMEMATCH")]
+        public string SurnameMatch { get; set; }
 
         [JsonProperty("ACCOUNTACCEPTSDEBITS")]
         public string AcceptDebits { get; set; }

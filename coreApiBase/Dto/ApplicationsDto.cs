@@ -18,6 +18,7 @@ namespace alumaApi.Dto
         public bool AllowSignature { get; set; }
         public bool DocumentsSigned { get; set; }
         public string BdaNumber { get; set; }
+        public string Description { get; set; }
         public bool PaymentConfirmed { get; set; }
     }
 }

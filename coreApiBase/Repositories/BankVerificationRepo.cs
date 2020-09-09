@@ -47,7 +47,7 @@ namespace alumaApi.Repositories
                 bav.OlderThan3Months = result.OlderThan3Months;
                 bav.TypeCorrect = result.TypeCorrect;
                 bav.IdNumberMatch = result.IdNumberMatch;
-                bav.NamesMatch = result.NamesMatch;
+                bav.NamesMatch = result.SurnameMatch;
                 bav.AcceptDebits = result.AcceptDebits;
                 bav.AcceptCredits = result.AcceptCredits;
 

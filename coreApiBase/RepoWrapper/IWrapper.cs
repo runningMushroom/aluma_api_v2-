@@ -38,8 +38,10 @@ namespace alumaApi.RepoWrapper
         IKycFactoryRepo KycFactory { get; }
         IMailSender SendMail { get; }
         IPvBerifyBankValidationRepo PbVerifyBankValidation { get; }
-        ISigniflowRepo Signiflow { get; }
+
+        //ISigniflowRepo Signiflow { get; }
         IStringHasher StrHasher { get; }
+
         ITokenProvider TokenProvider { get; }
 
         void Save();

@@ -262,6 +262,9 @@ namespace alumaApi.Migrations
                     b.Property<string>("Initials")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("InitialsMatch")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("JobID")
                         .HasColumnType("nvarchar(max)");
 
@@ -318,6 +321,9 @@ namespace alumaApi.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("EmploymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
 
@@ -348,6 +354,25 @@ namespace alumaApi.Migrations
                         .IsUnique();
 
                     b.ToTable("broker_details");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("3f7cb4b6-3b03-4b28-b012-e602ec5a3aaf"),
+                            City = "Pretoria",
+                            Complex = "Cheverney",
+                            Country = "South Africa",
+                            Created = new DateTime(2020, 9, 7, 15, 29, 30, 968, DateTimeKind.Local).AddTicks(7761),
+                            EmploymentDate = new DateTime(2019, 9, 7, 15, 29, 30, 969, DateTimeKind.Local).AddTicks(2852),
+                            Modified = new DateTime(2020, 9, 7, 15, 29, 30, 968, DateTimeKind.Local).AddTicks(7816),
+                            PostalCode = "0184",
+                            StreetName = "Joan",
+                            StreetNo = "30",
+                            Suburb = "La Montagne",
+                            Supervised = false,
+                            UnitNo = "922",
+                            UserId = new Guid("3f7cb4b6-3b03-4b28-b012-e602ec5c36af")
+                        });
                 });
 
             modelBuilder.Entity("alumaApi.Models.DividendTaxModel", b =>
@@ -401,6 +426,9 @@ namespace alumaApi.Migrations
                     b.Property<string>("Exemption_8")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Home")
                         .HasColumnType("nvarchar(max)");
 
@@ -410,7 +438,7 @@ namespace alumaApi.Migrations
                     b.Property<string>("IdNoPassport")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InitialsFirstName")
+                    b.Property<string>("Initials")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mobile")
@@ -431,10 +459,13 @@ namespace alumaApi.Migrations
                     b.Property<Guid>("StepId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TaxNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TitleSurname")
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TradingName")
@@ -596,11 +627,20 @@ namespace alumaApi.Migrations
                     b.Property<string>("ClientEmail")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Otp")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OtpType")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("RelatedDataId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -908,7 +948,7 @@ namespace alumaApi.Migrations
                     b.Property<string>("Employer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmpoymentStatus")
+                    b.Property<string>("EmploymentStatus")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstNames")
@@ -1334,16 +1374,16 @@ namespace alumaApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ba65815f-76f3-466e-98d2-6afcf3f0f69d"),
-                            Created = new DateTime(2020, 8, 29, 1, 37, 5, 194, DateTimeKind.Local).AddTicks(1018),
+                            Id = new Guid("3f7cb4b6-3b03-4b28-b012-e602ec5c36af"),
+                            Created = new DateTime(2020, 9, 7, 15, 29, 30, 955, DateTimeKind.Local).AddTicks(4037),
                             Email = "root@aluma.co.za",
                             FirstName = "rootUser",
                             IdNumber = "9000000000000",
                             LastName = "root",
                             MobileNumber = "0810000000",
                             MobileVerified = true,
-                            Modified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "9765.Av4F4zTT4FpLJJmiG2YM3w==.+lRiPNugBSkTLswjkU6h0WY1G1szAzPovdy0a1rETc8=",
+                            Modified = new DateTime(2020, 9, 7, 15, 29, 30, 955, DateTimeKind.Local).AddTicks(4626),
+                            Password = "9409.T0yzZrmhp2sR6DGevcr1GA==.r5RKE9Q8TbLi3Obc6VOxueBpxG02UnH+x4MgiInHBc8=",
                             Role = "Admin"
                         });
                 });

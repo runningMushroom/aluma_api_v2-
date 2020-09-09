@@ -3,6 +3,7 @@ using alumaApi.Dto;
 using alumaApi.Enum;
 using alumaApi.Models;
 using alumaApi.Models.Schedules;
+using Hangfire.States;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Hosting.Internal;
 using Signiflow;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -33,14 +35,11 @@ namespace alumaApi.Repositories
     {
         private readonly DefaultDbContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly ISigniflowRepo _signiflow;
 
-        public ApplicationRepo(DefaultDbContext databaseContext, IWebHostEnvironment host,
-            ISigniflowRepo signiflow) : base(databaseContext)
+        public ApplicationRepo(DefaultDbContext databaseContext, IWebHostEnvironment host) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
-            _signiflow = signiflow;
         }
 
         public void ProcessApplication(Guid applicationId)
@@ -65,6 +64,8 @@ namespace alumaApi.Repositories
 
         public void SignDocuments(Guid applicationId)
         {
+            SigniflowRepo _signiflow = new SigniflowRepo();
+
             var application = _context.Applications
                 .Where(c => c.Id == applicationId)
                 .Include(c => c.Documents)
@@ -84,14 +85,27 @@ namespace alumaApi.Repositories
 
             application.Documents.ToList().ForEach(doc =>
             {
-                List<SignerListItemDto> signers = null;
+                var docTypeRequireSignature = new List<DocumentTypesEnum>()
+                {
+                    DocumentTypesEnum.IntorLetter,
+                    DocumentTypesEnum.FinancialNeedsAnalysis,
+                    DocumentTypesEnum.PrimarySchedule,
+                    DocumentTypesEnum.RiskProfile,
+                    DocumentTypesEnum.RecordOfAdvise,
+                    DocumentTypesEnum.FspMandate,
+                    DocumentTypesEnum.Dividende,
+                };
 
-                signers =
-                    // Intro Letter
-                    doc.DocumentType == DocumentTypesEnum.IntorLetter ?
-                        new List<SignerListItemDto>()
-                        {   // client
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                // determine wether this document needs a signature
+                if (docTypeRequireSignature.Contains(doc.DocumentType))
+                {
+                    // create signer list
+                    List<SignerListItemDto> signers = doc.DocumentType switch
+                    {
+                        DocumentTypesEnum.IntorLetter => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -104,13 +118,11 @@ namespace alumaApi.Repositories
                                 WField = 120,
                                 Page = 2
                             })
-                        } :
-
-                    // FNA
-                    doc.DocumentType == DocumentTypesEnum.FinancialNeedsAnalysis ?
-                        new List<SignerListItemDto>()
-                        {   // client
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                        },
+                        DocumentTypesEnum.FinancialNeedsAnalysis => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -123,8 +135,8 @@ namespace alumaApi.Repositories
                                 WField = 120,
                                 Page = 1,
                             }),
-                            // advisor
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(advisor.Signature),
                                 FirstName = advisor.FirstName,
                                 LastName = advisor.LastName,
@@ -137,14 +149,11 @@ namespace alumaApi.Repositories
                                 WField = 120,
                                 Page = 1,
                             })
-                        } :
-
-                    // Primary Schedule Individual
-                    doc.DocumentType == DocumentTypesEnum.PrimarySchedule &&
-                        application.Steps.First(c => c.StepType == ApplicationStepTypesEnum.PrimarySchedule).ScheduleType == "Individual" ?
-                        new List<SignerListItemDto>()
-                        {   // client
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                        },
+                        DocumentTypesEnum.PrimarySchedule => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -155,13 +164,11 @@ namespace alumaApi.Repositories
                                 YField = 110,
                                 Page = 5
                             })
-                        } :
-
-                    // Risk Profile
-                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
-                        new List<SignerListItemDto>()
-                        {   // client
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                        },
+                        DocumentTypesEnum.RiskProfile => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -174,13 +181,11 @@ namespace alumaApi.Repositories
                                 WField = 120,
                                 Page = 2
                             })
-                        } :
-
-                    // Record of advise
-                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
-                        new List<SignerListItemDto>()
-                        {   // client
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                        },
+                        DocumentTypesEnum.RecordOfAdvise => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -191,8 +196,8 @@ namespace alumaApi.Repositories
                                 YField = 590,
                                 Page = 4
                             }),
-                            // advisor
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(advisor.Signature),
                                 FirstName = advisor.FirstName,
                                 LastName = advisor.LastName,
@@ -203,17 +208,12 @@ namespace alumaApi.Repositories
                                 YField = 580,
                                 Page = 4
                             })
-                        } :
-
-                    // fsp mandate
-                    doc.DocumentType == DocumentTypesEnum.FspMandate ?
-                        FspMandateSigningList(application, advisor) :
-
-                    // Dividend tax
-                    doc.DocumentType == DocumentTypesEnum.RiskProfile ?
-                        new List<SignerListItemDto>()
-                        {   // client initial
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                        },
+                        DocumentTypesEnum.FspMandate => FspMandateSigningList(application, advisor),
+                        DocumentTypesEnum.Dividende => new List<SignerListItemDto>()
+                        {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -227,8 +227,8 @@ namespace alumaApi.Repositories
                                 WField = 80,
                                 Page = 1
                             }),
-                            // client signature
-                            _signiflow.CreateSignerListItem(new SignerDto() {
+                            _signiflow.CreateSignerListItem(new SignerDto()
+                            {
                                 Signature = Convert.ToBase64String(application.User.Signature),
                                 FirstName = application.User.FirstName,
                                 LastName = application.User.LastName,
@@ -239,25 +239,37 @@ namespace alumaApi.Repositories
                                 YField = 145,
                                 Page = 2
                             })
-                        } :
-                    null;
+                        },
+                    };
 
-                var ceremony = _signiflow.CreateMultipleSignersCeremony(doc.DocuemtnData,
-                    doc.Name, signers);
+                    var ceremony = _signiflow.CreateMultipleSignersCeremony(doc.DocuemtnData,
+                        doc.Name, signers);
 
-                doc.DocuemtnData = Convert.FromBase64String(
-                    _signiflow.RunMultiSignerCeremony(ceremony));
+                    doc.DocuemtnData = Convert.FromBase64String(
+                        _signiflow.RunMultiSignerCeremony(ceremony));
 
-                _context.ApplicationDocuments.Update(doc);
+                    _context.ApplicationDocuments.Update(doc);
+                }
             });
 
+            // update application that documents have now been signed
             application.DocumentsSigned = true;
             _context.Applications.Update(application);
+
+            // update application step process application now completed
+            var step = _context.ApplicationSteps.First(
+                c => c.ApplicationId == applicationId &&
+                c.StepType == ApplicationStepTypesEnum.ProcessApplication);
+            step.ActiveStep = false;
+            step.Complete = true;
+            _context.ApplicationSteps.Update(step);
+
             _context.SaveChanges();
         }
 
         private List<SignerListItemDto> FspMandateSigningList(ApplicationsModel application, UserModel advisor)
         {
+            SigniflowRepo _signiflow = new SigniflowRepo();
             var signerList = new List<SignerListItemDto>();
 
             var mandate = _context.FspMandatates
@@ -335,7 +347,8 @@ namespace alumaApi.Repositories
                 .First(c => c.Id == applicationId);
 
             // get the advisor advise
-            var advise = _context.AdvisorAdvise.First(c => c.ApplicationId == applicationId);
+            var advise = _context.AdvisorAdvise
+                .First(c => c.ApplicationId == applicationId);
 
             // get the advisor
             var advisor = _context.Users
@@ -373,7 +386,9 @@ namespace alumaApi.Repositories
                     .Where(c => c.ApplicationId == applicationId)
                     .Include(c => c.ContactDetails)
                     .Include(c => c.ClientDetails)
+                        .ThenInclude(c => c.IdentityDetails)
                     .Include(c => c.TaxResidency)
+                        .ThenInclude(c => c.TaxResidencyItems)
                     .First();
 
                 address = new AddressDto()
@@ -390,7 +405,10 @@ namespace alumaApi.Repositories
                 client = new ClientDto()
                 {
                     DateOfBirth = schedule.ClientDetails.DateOfBirth,
-                    TaxNumber = schedule.TaxResidency.TaxNumber
+                    TaxNumber = schedule.TaxResidency.TaxNumber,
+                    WorkNumber = schedule.ContactDetails.WorkNumber,
+                    MobileNumber = schedule.ContactDetails.MobileNumber,
+                    Email = schedule.ContactDetails.Email
                 };
             }
 
@@ -404,8 +422,8 @@ namespace alumaApi.Repositories
 
             // intro letter
             documentList.Add(kycExist == true ?
-                CreateIntroLetter(appl.User, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
-                CreateIntroLetter(appl.User, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber));
+                CreateIntroLetter(advisor, kyc.FirstNames, kyc.SurName, kyc.IdNumber) :
+                CreateIntroLetter(advisor, appl.User.FirstName, appl.User.LastName, appl.User.IdNumber));
 
             // FNA
             documentList.Add(kycExist == true ?
@@ -425,7 +443,10 @@ namespace alumaApi.Repositories
                 .Where(c => c.ApplicationId == applicationId)
                 .Include(c => c.ContactDetails)
                 .Include(c => c.ClientDetails)
+                    .ThenInclude(c => c.IdentityDetails)
                 .Include(c => c.TaxResidency)
+                    .ThenInclude(c => c.TaxResidencyItems)
+                .Include(c => c.PurposeAndFunding)
                 .First();
 
                 schedulePrimary = CreatePrimaryIndividualSchedule(schedule, bankValidation);
@@ -454,6 +475,7 @@ namespace alumaApi.Repositories
             documentList.ForEach(doc =>
             {
                 doc.ApplicationId = appl.Id;
+                doc.B64Prefix = "data:application/pdf;base64,";
                 doc.Name =
                     doc.DocumentType == DocumentTypesEnum.IntorLetter ?
                         $"Intro Letter: {appl.User.FirstName} {appl.User.LastName}.pdf" :
@@ -500,32 +522,35 @@ namespace alumaApi.Repositories
             var d = new Dictionary<string, string>();
             d["NameSurname"] = $"{firstName} {lastName}";
             d[dividend.NatureOfEntity] = "X";
-            d["IdNo"] = idNumber;
-            d["DateOfBirth"] = client.DateOfBirth;
-            d["TaxNo"] = client.TaxNumber;
-            d["Address"] = $"{address.UnitNumber} {address.Complex} " +
-                $"{address.StreetNumber} {address.StreetName} " +
-                $"{address.Suburb} {address.City} {address.City}";
-            d["Postal"] = address.PostalCode;
-            d["Country"] = address.Country;
-            d["TitleSurname"] = $"{dividend.Title} {dividend.Surname}";
-            d["InitialsFirstName"] = $"{dividend.FirstName} {dividend.Initials}";
-            d["IdNoPassport"] = dividend.IdNoPassport;
-            d["Work"] = dividend.Work;
-            d["Home"] = dividend.Home;
-            d["Mobile"] = dividend.Mobile;
-            d["Email"] = dividend.Email;
-            d["sigName1"] = $"{firstName} {lastName}";
-            d["sigDate1"] = DateTime.Now.ToShortDateString();
-            d["sigCap1"] = "Self";
-            d["Exemption_1"] = dividend.Exemption_1 ?? string.Empty;
-            d["Exemption_2"] = dividend.Exemption_2 ?? string.Empty;
-            d["Exemption_3"] = dividend.Exemption_3 ?? string.Empty;
-            d["Exemption_4"] = dividend.Exemption_4 ?? string.Empty;
-            d["Exemption_5"] = dividend.Exemption_5 ?? string.Empty;
-            d["Exemption_6"] = dividend.Exemption_6 ?? string.Empty;
-            d["Exemption_7"] = dividend.Exemption_7 ?? string.Empty;
-            d["Exemption_8"] = dividend.Exemption_8 ?? string.Empty;
+            if (dividend.NatureOfEntity != "Individual")
+            {
+                d["IdNo"] = idNumber;
+                d["DateOfBirth"] = client.DateOfBirth;
+                d["TaxNo"] = client.TaxNumber;
+                d["Address"] = $"{address.UnitNumber} {address.Complex} " +
+                    $"{address.StreetNumber} {address.StreetName} " +
+                    $"{address.Suburb} {address.City} {address.City}";
+                d["Postal"] = address.PostalCode;
+                d["Country"] = address.Country;
+                d["TitleSurname"] = $"{dividend.Title} {dividend.Surname}";
+                d["InitialsFirstName"] = $"{dividend.FirstName} {dividend.Initials}";
+                d["IdNoPassport"] = dividend.IdNoPassport;
+                d["Work"] = dividend.Work ?? string.Empty;
+                d["Home"] = dividend.Home ?? string.Empty;
+                d["Mobile"] = dividend.Mobile ?? string.Empty;
+                d["Email"] = dividend.Email ?? string.Empty;
+                d["sigName1"] = $"{firstName} {lastName}";
+                d["sigDate1"] = DateTime.Now.ToShortDateString();
+                d["sigCap1"] = "Self";
+                d["Exemption_1"] = dividend.Exemption_1 ?? string.Empty;
+                d["Exemption_2"] = dividend.Exemption_2 ?? string.Empty;
+                d["Exemption_3"] = dividend.Exemption_3 ?? string.Empty;
+                d["Exemption_4"] = dividend.Exemption_4 ?? string.Empty;
+                d["Exemption_5"] = dividend.Exemption_5 ?? string.Empty;
+                d["Exemption_6"] = dividend.Exemption_6 ?? string.Empty;
+                d["Exemption_7"] = dividend.Exemption_7 ?? string.Empty;
+                d["Exemption_8"] = dividend.Exemption_8 ?? string.Empty;
+            }
 
             return new ApplicationDocumentsModel()
             {
@@ -571,7 +596,7 @@ namespace alumaApi.Repositories
 
             // full / limited discretion
             d[man.Objective] = "x";
-            d[$"{man.Objective[0]}{roa.DerivedProfile}"] = "x";
+            d[$"{man.Objective[0]}{risk.DerivedProfile}"] = "x";
             d["instruction_personal"] = man.InstructionPersonal ?? string.Empty;
             d["instruction_advisor"] = man.InstructionAdvisor ?? string.Empty;
             d["Adviser"] = man.Advisor ?? string.Empty;
@@ -639,7 +664,7 @@ namespace alumaApi.Repositories
 
             return new ApplicationDocumentsModel()
             {
-                DocuemtnData = PopulateDocument("ROA.pdf.pdf", data),
+                DocuemtnData = PopulateDocument("ROA.pdf", data),
                 DocumentType = DocumentTypesEnum.RecordOfAdvise
             };
         }
@@ -670,7 +695,7 @@ namespace alumaApi.Repositories
             d[r.RiskCapacity] = "x";
 
             // advisor notes
-            d["advisorNotes"] = advise.Notes;
+            d["advisorNotes"] = advise.Notes ?? string.Empty;
 
             return new ApplicationDocumentsModel()
             {
@@ -687,6 +712,8 @@ namespace alumaApi.Repositories
             var funding = schedule.PurposeAndFunding;
             var taxResidency = schedule.TaxResidency;
 
+            var employmentOptions = new List<string>() { };
+
             // client details
             data[clientDetails.ClientType] = clientDetails.ClientType ?? string.Empty;
             data["title"] = clientDetails.Title ?? string.Empty;
@@ -696,7 +723,7 @@ namespace alumaApi.Repositories
 
             data["countryOfBirth"] = clientDetails.CountryOfBirth ?? string.Empty;
             data["nationality"] = clientDetails.Nationality ?? string.Empty;
-            data[clientDetails.EmpoymentStatus] = clientDetails.EmpoymentStatus ?? string.Empty;
+            data[clientDetails.EmploymentStatus] = "x";
             data["employer"] = clientDetails.Employer ?? string.Empty;
             data["businessNature"] = clientDetails.Industry ?? string.Empty;
             data["occupation"] = clientDetails.Occupation ?? string.Empty;
@@ -704,7 +731,7 @@ namespace alumaApi.Repositories
             var c = 1;
             foreach (var e in clientDetails.IdentityDetails)
             {
-                data[$"type_{c}"] = e.IdentificationType ?? string.Empty;
+                data[$"Type_{c}"] = e.IdentificationType ?? string.Empty;
                 data[$"Country_{c}"] = e.CountryOfIssure ?? string.Empty;
                 data[$"IdNo_{c}"] = e.IdentificationNumber ?? string.Empty;
                 data[$"Expiry_{c}"] = e.ExpiryDate ?? string.Empty;
@@ -798,7 +825,7 @@ namespace alumaApi.Repositories
         {
             var data = new Dictionary<string, string>();
 
-            data["bankName"] = bv.BankName ?? string.Empty;
+            //data["bankName"] = bv.BankName ?? string.Empty;
             data["name"] = $"{firstName} {lastName}";
             data["searchDate"] = DateTime.Now.ToShortDateString();
             data["reference"] = bv.Reference;
@@ -852,7 +879,7 @@ namespace alumaApi.Repositories
 
             return new ApplicationDocumentsModel()
             {
-                DocuemtnData = PopulateDocument("IntroLetter.pdf", data),
+                DocuemtnData = PopulateDocument("FNA.pdf", data),
                 DocumentType = DocumentTypesEnum.FinancialNeedsAnalysis
             };
         }
@@ -863,10 +890,11 @@ namespace alumaApi.Repositories
             // create data dictionary
             var data = new Dictionary<string, string>();
             data["advisor"] = $"{advisor.FirstName} {advisor.LastName}";
-            data["employmentDate"] = advisor.BrokerDetails.EmploymentDate.ToShortDateString();
+            data["employmentDate"] = advisor.BrokerDetails.EmploymentDate.ToShortDateString() ?? string.Empty;
             data["mobile"] = advisor.MobileNumber;
             data["email"] = advisor.Email;
-            data["supervised"] = advisor.BrokerDetails.Supervised ? "supervised" : "not supervised";
+            data["supervised"] = advisor.BrokerDetails.Supervised == true ?
+                "supervised" : "not supervised";
             data["confirmation"] = $"{advisor.FirstName} {advisor.LastName}";
             data["client"] = $"{firstName} {lastName}";
             data["idNumber"] = IdNumber;

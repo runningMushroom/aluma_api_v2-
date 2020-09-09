@@ -80,7 +80,7 @@ namespace Signiflow
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
-            request.AddParameter("application/json", JsonConvert.SerializeObject(dto.DocField), ParameterType.RequestBody);
+            request.AddParameter("application/json", JsonConvert.SerializeObject(dto), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)

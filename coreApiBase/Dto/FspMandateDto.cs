@@ -30,7 +30,6 @@ namespace alumaApi.Dto
         public string InstructionAdvisor { get; set; }
         public string InstructionFsp { get; set; }
         public string Advisor { get; set; }
-        public string Payout_1 { get; set; }
-        public string Payout_2 { get; set; }
+        public string PayoutOption { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace alumaApi.Models
                 .OnDelete(DeleteBehavior.Cascade);
             mb.HasData(new UserModel()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("3F7CB4B6-3B03-4B28-B012-E602EC5C36AF"),
                 Email = "root@aluma.co.za",
                 FirstName = "rootUser",
                 IdNumber = "9000000000000",

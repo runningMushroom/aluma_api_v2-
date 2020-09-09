@@ -18,7 +18,7 @@ namespace alumaApi.Dto.Schedules.PrimaryIndividual
         public string CityOfBirth { get; set; }
         public string Nationality { get; set; }
         public ICollection<IdentityDetailsDto> IdentityDetails { get; set; }
-        public string EmpoymentStatus { get; set; }
+        public string EmploymentStatus { get; set; }
         public string Employer { get; set; }
         public string Industry { get; set; }
         public string Occupation { get; set; }
