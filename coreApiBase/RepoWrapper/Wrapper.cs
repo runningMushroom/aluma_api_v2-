@@ -36,6 +36,8 @@ namespace alumaApi.RepoWrapper
         // Schedules
         private IPrimaryIndividualRepo _primaryIndividual;
 
+        private IPrimaryTrustRepo _primaryTrust;
+
         private IBulkSmsRepo _bulkSMs;
         private IJwtRepo _jwt;
         private IKycFactoryRepo _kyc;
@@ -131,6 +133,11 @@ namespace alumaApi.RepoWrapper
         public IPrimaryIndividualRepo PrimaryIndividual
         {
             get { return _primaryIndividual == null ? new PrimaryIndividualRepo(_dbContext) : _primaryIndividual; }
+        }
+
+        public IPrimaryTrustRepo PrimaryTrust
+        {
+            get { return _primaryTrust == null ? new PrimaryTrustRepo(_dbContext) : _primaryTrust; }
         }
 
         // non db

@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace alumaApi.Models.Schedules.PrimaryIndividual
+namespace alumaApi.Models.Schedules.PrimaryTrust
 {
-    [Table("primary_schedule_individual_bank_details")]
-    public class BankDetailsModel : BaseBankDetailsModel
+    [Table("primary_schedule_trust_bank_details")]
+    public class TrustBankDetailsModel : BaseBankDetailsModel
     {
         public Guid Id { get; set; }
         public Guid ScheduleId { get; set; }
-        public PrimaryIndividualModel Schedule { get; set; }
+        public PrimaryTrustModel Schedule { get; set; }
     }
 }

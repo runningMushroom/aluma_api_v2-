@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace alumaApi.Enum
 {
-    public enum ScheduleTypesEnum
+    public enum AddressTypesEnum
     {
-        Individual,
-        Company,
-        Trust,
+        Postal,
+        Residential,
     }
 }

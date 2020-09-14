@@ -13,6 +13,12 @@ namespace alumaApi.Repositories
         List<ApplicationStepModel> CreateApplicationSteps(string scheduleType, Guid applicationId);
 
         ApplicationStepModel ReturnNextStep(Guid applicationId, int currentStep);
+
+        void AddIrsw9Step(Guid applicationId);
+
+        void AddLossOfNationalityStep(Guid applicationId);
+
+        void AddIrsw8beneStep(Guid applicationId);
     }
 
     public class ApplicationStepRepo : RepoBase<ApplicationStepModel>, IApplicationStepRepo
@@ -64,7 +70,8 @@ namespace alumaApi.Repositories
                 Order = 4,
                 ScheduleType =
                     scheduleType == "individual" ? ScheduleTypesEnum.Individual.ToString() :
-                    scheduleType == "company" ? ScheduleTypesEnum.Company.ToString() : "Undefined Type"
+                    scheduleType == "company" ? ScheduleTypesEnum.Company.ToString() :
+                    scheduleType == "trust" ? ScheduleTypesEnum.Trust.ToString() : "Undefined Type"
             });
 
             // 5:  Risk Profile
@@ -134,6 +141,75 @@ namespace alumaApi.Repositories
 
             if (step == null) throw new NullReferenceException("Couldn't find next step");
 
+            return step;
+        }
+
+        public void AddIrsw9Step(Guid applicationId)
+        {
+            // get the signature step and incriment it's order with 1
+            var signatureStep = SignatureStep(applicationId);
+            _context.ApplicationSteps.Update(signatureStep);
+
+            // add new step with the order position that the signature step use to have
+            var newStep = new ApplicationStepModel()
+            {
+                ActiveStep = false,
+                ApplicationId = applicationId,
+                Complete = false,
+                Order = signatureStep.Order -= 1,
+                StepType = ApplicationStepTypesEnum.Irsw9
+            };
+
+            _context.ApplicationSteps.Add(newStep);
+            _context.SaveChanges();
+        }
+
+        public void AddLossOfNationalityStep(Guid applicationId)
+        {
+            // get the signature step and incriment it's order with 1
+            var signatureStep = SignatureStep(applicationId);
+            _context.ApplicationSteps.Update(signatureStep);
+
+            var newStep = new ApplicationStepModel()
+            {
+                ActiveStep = false,
+                ApplicationId = applicationId,
+                Complete = false,
+                Order = signatureStep.Order -= 1,
+                StepType = ApplicationStepTypesEnum.LossOfNationality
+            };
+
+            _context.ApplicationSteps.Add(newStep);
+            _context.SaveChanges();
+        }
+
+        public void AddIrsw8beneStep(Guid applicationId)
+        {
+            // get the signature step and incriment it's order with 1
+            var signatureStep = SignatureStep(applicationId);
+            _context.ApplicationSteps.Update(signatureStep);
+
+            var newStep = new ApplicationStepModel()
+            {
+                ActiveStep = false,
+                ApplicationId = applicationId,
+                Complete = false,
+                Order = signatureStep.Order -= 1,
+                StepType = ApplicationStepTypesEnum.Irsw8bene
+            };
+
+            _context.ApplicationSteps.Add(newStep);
+            _context.SaveChanges();
+        }
+
+        private ApplicationStepModel SignatureStep(Guid applicationId)
+        {
+            var step = _context.ApplicationSteps
+                .First(
+                    c => c.ApplicationId == applicationId &&
+                    c.StepType == ApplicationStepTypesEnum.ProcessApplication);
+
+            step.Order += 1;
             return step;
         }
     }

@@ -49,7 +49,8 @@ namespace alumaApi.Controllers
                     UserId = claims.UserId,
                     Description =
                         scheduleType == "individual" ? ScheduleTypesEnum.Individual.ToString() :
-                        scheduleType == "company" ? ScheduleTypesEnum.Company.ToString() : "Undefined Type"
+                        scheduleType == "company" ? ScheduleTypesEnum.Company.ToString() :
+                        scheduleType == "trust" ? ScheduleTypesEnum.Trust.ToString() : "Undefined Type"
                 };
 
                 _repo.Applications.Create(application);

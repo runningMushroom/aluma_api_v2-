@@ -3,6 +3,7 @@ using alumaApi.Models;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using alumaApi.Models.Schedules;
 using alumaApi.Models.Schedules.PrimaryIndividual;
+using alumaApi.Models.Schedules.PrimaryTrust;
 
 namespace alumaApi.Data
 {
@@ -26,6 +27,11 @@ namespace alumaApi.Data
             mb.ApplyConfiguration(new ClientDetailsModelBuilder());
             mb.ApplyConfiguration(new PurposeAndFundingModelBuilder());
             mb.ApplyConfiguration(new TaxResidencyModelBuilder());
+
+            // Primary Trust
+            mb.ApplyConfiguration(new PrimaryTrustModelBuilder());
+            mb.ApplyConfiguration(new TrustDetailsModelBuilder());
+            mb.ApplyConfiguration(new TrustTaxResidencyModelBuilder());
         }
 
         public DbSet<AdvisorAdvisedProductsModel> AdvisorAdvisedProducts { get; set; }
@@ -57,5 +63,14 @@ namespace alumaApi.Data
         public DbSet<PurposeOptionModel> PI_PurposeOptions { get; set; }
         public DbSet<TaxResidencyItemsModel> PI_TaxResidencyItems { get; set; }
         public DbSet<TaxResidencyModel> PI_TaxResidencies { get; set; }
+
+        // Primary Trust Schedule
+        public DbSet<PrimaryTrustModel> PrimaryTrusts { get; set; }
+
+        public DbSet<TrustDetailsModel> TrustDetails { get; set; }
+        public DbSet<TrustAddressItemsModel> TrustAddressItems { get; set; }
+        public DbSet<TrustEntityModel> TrustEntity { get; set; }
+        public DbSet<TrustTaxResidencyModel> TrustTaxResidency { get; set; }
+        public DbSet<TrustTaxResidencyItemModel> TrustTaxResidencyItem { get; set; }
     }
 }

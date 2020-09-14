@@ -31,6 +31,8 @@ namespace alumaApi.RepoWrapper
         // Schedules
         IPrimaryIndividualRepo PrimaryIndividual { get; }
 
+        IPrimaryTrustRepo PrimaryTrust { get; }
+
         // from other sources
 
         IBulkSmsRepo BulkSms { get; }

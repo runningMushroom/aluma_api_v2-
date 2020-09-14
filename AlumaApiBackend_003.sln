@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "coreApiBase", "coreApiBase\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BulkSms", "BulkSms\BulkSms.csproj", "{64209E83-FE0C-4693-9837-837C51AB71A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthentication", "..\..\classLibraries\dotnet3\JwtAuthentication\JwtAuthentication.csproj", "{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KycFactory", "KycFactory\KycFactory.csproj", "{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PbVerifyBankValidation", "PbVerifyBankValidation\PbVerifyBankValidation.csproj", "{FC73E86E-B17A-4796-B392-58060B968EED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signiflow", "Signiflow\Signiflow.csproj", "{047CC9B5-4049-4218-BF3E-AC0F0D88978A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signiflow", "Signiflow\Signiflow.csproj", "{047CC9B5-4049-4218-BF3E-AC0F0D88978A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthentication", "JwtAuthentication\JwtAuthentication.csproj", "{9916AD9B-00F1-43F4-9045-79227C4A24F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		{64209E83-FE0C-4693-9837-837C51AB71A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64209E83-FE0C-4693-9837-837C51AB71A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64209E83-FE0C-4693-9837-837C51AB71A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D7F116D-61DA-4D15-8DA0-AD3AE4C7F0A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C11D020-64C2-4322-BEB0-9D8275E5ED1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{047CC9B5-4049-4218-BF3E-AC0F0D88978A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{047CC9B5-4049-4218-BF3E-AC0F0D88978A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{047CC9B5-4049-4218-BF3E-AC0F0D88978A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9916AD9B-00F1-43F4-9045-79227C4A24F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9916AD9B-00F1-43F4-9045-79227C4A24F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9916AD9B-00F1-43F4-9045-79227C4A24F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9916AD9B-00F1-43F4-9045-79227C4A24F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

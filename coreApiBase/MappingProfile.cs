@@ -10,6 +10,8 @@ using alumaApi.Dto.Schedules.PrimaryIndividual;
 using alumaApi.Repositories;
 using KycFactory;
 using PbVerifyBankValidation;
+using alumaApi.Models.Schedules.PrimaryTrust;
+using alumaApi.Dto.Schedules.PrimaryTrust;
 
 namespace alumaApi
 {
@@ -110,6 +112,28 @@ namespace alumaApi
                 .ReverseMap();
 
             CreateMap<TaxResidencyItemsModel, TaxResidencyItemsDto>()
+                .ReverseMap();
+
+            // Schedule Primary Trust
+            CreateMap<PrimaryTrustModel, PrimaryTrustDto>()
+                .ReverseMap();
+
+            CreateMap<TrustBankDetailsModel, TrustBankDetailsDto>()
+                .ReverseMap();
+
+            CreateMap<TrustDetailsModel, TrustDetailsDto>()
+                .ReverseMap();
+
+            CreateMap<TrustAddressItemsModel, TrustAddressItemsDto>()
+                .ReverseMap();
+
+            CreateMap<TrustEntityModel, TrustEntityDto>()
+                .ReverseMap();
+
+            CreateMap<TrustTaxResidencyModel, TrustTaxResidencyDto>()
+                .ReverseMap();
+
+            CreateMap<TrustTaxResidencyItemModel, TrustTaxResidencyItemDto>()
                 .ReverseMap();
         }
     }
